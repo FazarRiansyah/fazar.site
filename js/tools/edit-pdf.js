@@ -3,7 +3,7 @@
  */
 
 let editorState = {
-    docs: [], // Array of { name, pdfLibDoc, pdfJsDoc, pages, currentPage, zoom }
+    docs: [], // Array of { name, pdfLibDoc, pdfJsDoc, pages, currentPage, zoom, security: { password: null, wipeMetadata: false } }
     activeDocIndex: -1,
     container: null
 };
@@ -60,7 +60,8 @@ async function openNewDocument(file) {
             pdfJsDoc,
             pages,
             currentPage: 1,
-            zoom: 1.0
+            zoom: 1.0,
+            security: { wipeMetadata: false }
         };
 
         editorState.docs.push(newDoc);
@@ -172,6 +173,9 @@ function setupEditorButtons(container) {
         input.onchange = (e) => addStampToPdf(e.target.files[0]);
         input.click();
     });
+
+    // Keamanan
+    container.querySelector('#btn-editor-password')?.addEventListener('click', () => wipeMetadata());
 
     // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {
@@ -291,7 +295,6 @@ function updateStatusBar() {
 
     if (status && doc) {
         status.textContent = `Halaman ${doc.currentPage} / ${doc.pages.length}`;
-        
         if (btnPrev) {
             btnPrev.disabled = doc.currentPage === 1;
             btnPrev.style.opacity = doc.currentPage === 1 ? '0.3' : '1';
@@ -368,7 +371,6 @@ async function addTextToPdf() {
     const doc = editorState.docs[editorState.activeDocIndex];
     const text = prompt("Masukkan teks yang ingin ditambahkan:");
     if (!text) return;
-    
     const page = doc.pdfLibDoc.getPage(doc.pages[doc.currentPage - 1].index);
     page.drawText(text, { x: 50, y: page.getSize().height - 50, size: 14, color: PDFLib.rgb(0, 0, 0) });
     await syncDoc(doc);
@@ -421,12 +423,17 @@ async function addStampToPdf(file) {
     reader.readAsDataURL(file);
 }
 
+async function wipeMetadata() {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    doc.security.wipeMetadata = true;
+    alert("Privasi Aktif: Metadata sensitif akan dihapus saat file diunduh.");
+}
+
 async function addImageToPdf(dataUrl, options) {
     const doc = editorState.docs[editorState.activeDocIndex];
     const imageBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
     const isPng = dataUrl.includes('image/png');
     const image = isPng ? await doc.pdfLibDoc.embedPng(imageBytes) : await doc.pdfLibDoc.embedJpg(imageBytes);
-    
     const page = doc.pdfLibDoc.getPage(doc.pages[doc.currentPage - 1].index);
     page.drawImage(image, options);
     await syncDoc(doc);
@@ -450,6 +457,14 @@ async function exportPdf() {
         const [copied] = await finalDoc.copyPages(doc.pdfLibDoc, [p.index]);
         finalDoc.addPage(copied);
     }
+    
+    if (doc.security.wipeMetadata) {
+        finalDoc.setTitle('');
+        finalDoc.setAuthor('JagaDokumen Anonymous');
+        finalDoc.setProducer('JagaDokumen Super Editor');
+        finalDoc.setCreator('JagaDokumen Portal');
+    }
+
     downloadBlob(await finalDoc.save(), `Edited_${doc.name}`);
 }
 
