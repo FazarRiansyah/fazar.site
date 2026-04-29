@@ -3775,9 +3775,9 @@ canvas, .canvas-container {
 
 .catalog-modal-content {
     background: var(--bg-card);
-    width: 90%;
-    max-width: 800px;
-    max-height: 85vh;
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
