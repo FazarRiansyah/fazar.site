@@ -15,6 +15,9 @@ const initApp = () => {
     try { initKeyboardShortcuts(); } catch(e) { console.error("Shortcuts init failed", e); }
     try { initProVisuals(); } catch(e) { console.error("Pro Visuals failed", e); }
     try { initPreloader(); } catch(e) { console.error("Preloader failed", e); }
+    
+    // Auto-open tool from URL parameter (?tool=Name)
+    try { handleUrlParams(); } catch(e) { console.error("URL Params failed", e); }
 
     // How it works listener
     const howBtn = document.getElementById('btn-how-it-works');
@@ -458,4 +461,23 @@ function initModal() {
             document.body.style.overflow = 'auto';
         }
     });
+}
+function handleUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const toolToOpen = params.get('tool');
+    if (toolToOpen) {
+        // Wait a bit for everything to be ready
+        setTimeout(() => {
+            const cards = document.querySelectorAll('.tool-card');
+            const targetCard = Array.from(cards).find(card => {
+                const title = card.querySelector('h3');
+                return title && title.textContent.trim().toLowerCase() === toolToOpen.toLowerCase();
+            });
+
+            if (targetCard) {
+                const btn = targetCard.querySelector('.btn-tool');
+                if (btn) btn.click();
+            }
+        }, 1000);
+    }
 }
