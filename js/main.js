@@ -476,7 +476,11 @@ function handleUrlParams() {
 
             if (targetCard) {
                 const btn = targetCard.querySelector('.btn-tool');
-                if (btn) btn.click();
+                if (btn) {
+                    btn.click();
+                    // Clean up URL to prevent repeat on refresh
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
             }
         }, 1000);
     }

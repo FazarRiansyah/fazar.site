@@ -3757,19 +3757,19 @@ canvas, .canvas-container {
 /* ==========================================================================
    Tools Catalog Modal (Pop-up System)
    ========================================================================== */
-.modal-overlay {
+.catalog-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 10000;
     animation: fadeIn 0.3s ease;
 }
 
