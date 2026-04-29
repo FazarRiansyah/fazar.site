@@ -3361,4 +3361,171 @@ canvas, .canvas-container {
     color: var(--primary-blue) !important;
 }
 
+/* ==========================================================================
+   Responsive & Mobile Optimization
+   ========================================================================== */
+
+/* Standard Grid for Tools */
+.tool-workspace-grid {
+    display: grid; 
+    grid-template-columns: 350px 1fr; 
+    gap: 30px;
+}
+
+@media (max-width: 1024px) {
+    .tool-workspace-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .pdf-tool-container {
+        padding: 10px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .site-header {
+        padding: 15px 20px !important;
+    }
+    
+    .logo-text {
+        font-size: 1.1rem;
+    }
+    
+    .app-container {
+        padding: 80px 15px 40px 15px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .tool-card {
+        padding: 24px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .footer-attribution {
+        text-align: center !important;
+        align-items: center !important;
+    }
+    
+    .footer-attribution div {
+        align-items: center !important;
+    }
+    
+    /* Navigation Pill */
+    .theme-toggle-pill {
+        transform: scale(0.9);
+    }
+    
+    .badge-status {
+        display: none !important;
+    }
+    
+    .header-search {
+        display: none !important;
+    }
+    
+    .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1.1rem;
+    }
+
+    #pnum-visual-marker {
+        padding: 10px 15px !important;
+        font-size: 16px !important;
+        box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .tool-view-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px !important;
+    }
+    
+    .tool-view-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .tool-view-title-wrapper {
+        margin: 10px 0;
+    }
+    
+    .upload-area {
+        padding: 40px 20px;
+    }
+    
+    .upload-area i {
+        font-size: 60px !important;
+    }
+}
+
+/* Fluid Grids */
+.fluid-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+.fluid-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.fluid-grid-p2t {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+}
+
+.fluid-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 1024px) {
+    .fluid-grid-5 { grid-template-columns: repeat(3, 1fr); }
+    .fluid-grid-2 { grid-template-columns: 1fr; gap: 20px; }
+    .fluid-grid-p2t { grid-template-columns: 1fr; height: auto !important; min-height: unset !important; }
+}
+
+@media (max-width: 768px) {
+    .fluid-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .fluid-grid-3 { grid-template-columns: 1fr; gap: 12px; }
+}
+
+@media (max-width: 480px) {
+    .fluid-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+
 /* End of file - Cleaned redundant animations */
