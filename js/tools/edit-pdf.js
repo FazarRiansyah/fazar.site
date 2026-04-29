@@ -1,6 +1,5 @@
 /**
  * Super Editor PDF Logic - Multi-Tab Professional Version
- * Final Phase: Edit & Annotation (Text & Signature)
  */
 
 let editorState = {
@@ -166,6 +165,13 @@ function setupEditorButtons(container) {
     // Edit
     container.querySelector('#btn-editor-add-text')?.addEventListener('click', () => addTextToPdf());
     container.querySelector('#btn-editor-add-sign')?.addEventListener('click', () => openSignatureModal());
+    container.querySelector('#btn-editor-add-stamp')?.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (e) => addStampToPdf(e.target.files[0]);
+        input.click();
+    });
 
     // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {
@@ -212,7 +218,7 @@ async function renderThumbnails() {
         const item = document.createElement('div');
         item.className = `thumbnail-item ${pageNum === doc.currentPage ? 'active' : ''} ${pageData.isSelected ? 'selected' : ''}`;
         item.style.cssText = 'width: 120px; display: flex; flex-direction: column; align-items: center; position: relative; cursor: pointer;';
-        
+
         const selectBadge = document.createElement('div');
         selectBadge.className = 'select-badge';
         selectBadge.style.cssText = `position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.3)'}; z-index:10; display:flex; align-items:center; justify-content:center; color:white; font-size:10px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);`;
@@ -280,7 +286,23 @@ async function renderActivePage() {
 function updateStatusBar() {
     const doc = editorState.docs[editorState.activeDocIndex];
     const status = editorState.container.querySelector('#editor-page-status');
-    if (status && doc) status.textContent = `Halaman ${doc.currentPage} / ${doc.pages.length}`;
+    const btnPrev = editorState.container.querySelector('#btn-editor-prev');
+    const btnNext = editorState.container.querySelector('#btn-editor-next');
+
+    if (status && doc) {
+        status.textContent = `Halaman ${doc.currentPage} / ${doc.pages.length}`;
+        
+        if (btnPrev) {
+            btnPrev.disabled = doc.currentPage === 1;
+            btnPrev.style.opacity = doc.currentPage === 1 ? '0.3' : '1';
+            btnPrev.style.cursor = doc.currentPage === 1 ? 'default' : 'pointer';
+        }
+        if (btnNext) {
+            btnNext.disabled = doc.currentPage === doc.pages.length;
+            btnNext.style.opacity = doc.currentPage === doc.pages.length ? '0.3' : '1';
+            btnNext.style.cursor = doc.currentPage === doc.pages.length ? 'default' : 'pointer';
+        }
+    }
 }
 
 async function rotatePage(degrees) {
@@ -342,88 +364,71 @@ async function addWatermark() {
     await syncDoc(doc);
 }
 
-// Phase 5: Edit Logic
 async function addTextToPdf() {
     const doc = editorState.docs[editorState.activeDocIndex];
     const text = prompt("Masukkan teks yang ingin ditambahkan:");
     if (!text) return;
     
     const page = doc.pdfLibDoc.getPage(doc.pages[doc.currentPage - 1].index);
-    page.drawText(text, {
-        x: 50,
-        y: page.getSize().height - 50,
-        size: 14,
-        color: PDFLib.rgb(0, 0, 0)
-    });
+    page.drawText(text, { x: 50, y: page.getSize().height - 50, size: 14, color: PDFLib.rgb(0, 0, 0) });
     await syncDoc(doc);
 }
 
 function openSignatureModal() {
     const template = document.getElementById('tpl-signature-modal');
     if (!template) return;
-    
     const modalClone = template.content.cloneNode(true);
     document.body.appendChild(modalClone);
-    
     const modal = document.getElementById('signatureModal');
     const canvas = document.getElementById('signature-canvas');
     const ctx = canvas.getContext('2d');
     let drawing = false;
 
-    // Drawing Logic
     const startDraw = (e) => {
-        drawing = true;
-        ctx.beginPath();
+        drawing = true; ctx.beginPath();
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX || e.touches[0].clientX) - rect.left;
         const y = (e.clientY || e.touches[0].clientY) - rect.top;
         ctx.moveTo(x, y);
     };
-    
     const doDraw = (e) => {
         if (!drawing) return;
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX || e.touches[0].clientX) - rect.left;
         const y = (e.clientY || e.touches[0].clientY) - rect.top;
-        ctx.lineTo(x, y);
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.stroke();
+        ctx.lineTo(x, y); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
     };
-    
     const stopDraw = () => drawing = false;
 
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', doDraw);
-    canvas.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('touchstart', startDraw);
-    canvas.addEventListener('touchmove', doDraw);
-    canvas.addEventListener('touchend', stopDraw);
+    canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', doDraw); canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', doDraw); canvas.addEventListener('touchend', stopDraw);
 
     document.getElementById('btn-clear-signature').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     document.getElementById('btn-save-signature').onclick = async () => {
         const signData = canvas.toDataURL('image/png');
-        await addSignatureToPdf(signData);
+        await addImageToPdf(signData, { x: 400, y: 50, width: 100, height: 50 });
         modal.remove();
     };
 }
 
-async function addSignatureToPdf(dataUrl) {
+async function addStampToPdf(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        await addImageToPdf(e.target.result, { x: 50, y: 50, width: 100, height: 100 });
+        alert("Stempel berhasil ditambahkan!");
+    };
+    reader.readAsDataURL(file);
+}
+
+async function addImageToPdf(dataUrl, options) {
     const doc = editorState.docs[editorState.activeDocIndex];
     const imageBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
-    const pngImage = await doc.pdfLibDoc.embedPng(imageBytes);
+    const isPng = dataUrl.includes('image/png');
+    const image = isPng ? await doc.pdfLibDoc.embedPng(imageBytes) : await doc.pdfLibDoc.embedJpg(imageBytes);
     
     const page = doc.pdfLibDoc.getPage(doc.pages[doc.currentPage - 1].index);
-    const { width, height } = page.getSize();
-    
-    page.drawImage(pngImage, {
-        x: width - 150,
-        y: 50,
-        width: 100,
-        height: 50,
-    });
-    
+    page.drawImage(image, options);
     await syncDoc(doc);
 }
 
