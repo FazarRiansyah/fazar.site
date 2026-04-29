@@ -205,6 +205,7 @@ function initViewSwitching() {
                             else if (title === 'Resize Gambar') found = inject('tpl-resize-image', typeof initResizeImg !== 'undefined' ? initResizeImg : null);
                             else if (title === 'Konversi Gambar') found = inject('tpl-convert-image', typeof initConvertImg !== 'undefined' ? initConvertImg : null);
                             else if (title === 'Kompres PDF') found = inject('tpl-compress-pdf', typeof initCompressPdf !== 'undefined' ? initCompressPdf : null);
+                            else if (title === 'Nomor Halaman PDF') found = inject('tpl-page-numbers', typeof initPageNumbers !== 'undefined' ? initPageNumbers : null);
 
                             if (!found) {
                                 toolViewBody.innerHTML = `<div class="tool-placeholder" style="text-align:center;padding:100px 20px;"><div class="placeholder-icon" style="font-size:80px;color:var(--primary-blue);margin-bottom:24px;opacity:0.8;"><i class="ph-fill ph-rocket-launch"></i></div><h2 style="font-size:2rem;color:var(--text-main);margin-bottom:16px;">Fitur Sedang Disiapkan!</h2><p style="color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.6;font-size:1.1rem;">Kami sedang meracik fitur <strong>${title}</strong> ini agar memberikan pengalaman terbaik untuk Anda.</p></div>`;
@@ -368,22 +369,32 @@ function initThemeToggle() {
     const toggleBtn = document.querySelector('.theme-toggle');
     if (!toggleBtn) return;
     toggleBtn.addEventListener('click', () => {
+        const root = document.documentElement;
         const body = document.body;
         const icon = toggleBtn.querySelector('i');
-        if (body.hasAttribute('data-theme')) {
+        const text = toggleBtn.querySelector('span');
+        
+        if (root.hasAttribute('data-theme')) {
+            root.removeAttribute('data-theme');
             body.removeAttribute('data-theme');
             if (icon) icon.className = 'ph-fill ph-moon';
+            if (text) text.textContent = 'Mode Gelap';
             localStorage.setItem('theme', 'light');
         } else {
+            root.setAttribute('data-theme', 'dark');
             body.setAttribute('data-theme', 'dark');
             if (icon) icon.className = 'ph-fill ph-sun';
+            if (text) text.textContent = 'Mode Terang';
             localStorage.setItem('theme', 'dark');
         }
     });
     if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
         document.body.setAttribute('data-theme', 'dark');
         const icon = toggleBtn.querySelector('i');
+        const text = toggleBtn.querySelector('span');
         if (icon) icon.className = 'ph-fill ph-sun';
+        if (text) text.textContent = 'Mode Terang';
     }
 }
 

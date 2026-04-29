@@ -51,9 +51,9 @@ function initPdfToText(container = document) {
         if (workspace) workspace.style.display = 'none';
         uploadArea.style.display = 'flex';
         uploadArea.innerHTML = `
-            <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:#2563eb;"></i>
-            <p style="font-weight:700;color:#64748b;font-size:0.95rem;">Membaca Dokumen...</p>
-            <p style="font-size:0.8rem;color:#94a3b8;">${file.name}</p>`;
+            <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:var(--primary-blue);"></i>
+            <p style="font-weight:700;color:var(--text-main);font-size:0.95rem;margin-top:10px;">Membaca Dokumen...</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">${file.name}</p>`;
 
         try {
             const buf = await file.arrayBuffer();
@@ -121,7 +121,7 @@ function initPdfToText(container = document) {
 
     function resetUploadArea() {
         uploadArea.innerHTML = `
-            <i class="ph-fill ph-file-text" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
+            <i class="ph-fill ph-file-text" style="font-size: 80px; color: var(--primary-blue); margin-bottom: 20px;"></i>
             <div class="upload-text">
                 <h3>PDF to Text</h3>
                 <p>Ekstrak teks murni dari file PDF Anda</p>

@@ -36,18 +36,18 @@ function initSplitPdf(container = document) {
     // Drag & Drop
     uploadArea.ondragover = (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#2563eb';
-        uploadArea.style.background = '#eff6ff';
+        uploadArea.style.borderColor = 'var(--primary-blue)';
+        uploadArea.style.background = 'var(--color-blue-light)';
     };
     uploadArea.ondragleave = (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#e2e8f0';
-        uploadArea.style.background = 'white';
+        uploadArea.style.borderColor = 'var(--border-color)';
+        uploadArea.style.background = 'transparent';
     };
     uploadArea.ondrop = (e) => {
         e.preventDefault();
-        uploadArea.style.borderColor = '#e2e8f0';
-        uploadArea.style.background = 'white';
+        uploadArea.style.borderColor = 'var(--border-color)';
+        uploadArea.style.background = 'transparent';
         const file = Array.from(e.dataTransfer.files).find(f => f.type === 'application/pdf');
         if (file) handleFile(file);
     };
@@ -61,9 +61,9 @@ function initSplitPdf(container = document) {
         // Show loading spinner
         uploadArea.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:220px;';
         uploadArea.innerHTML = `
-            <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:#8b5cf6;"></i>
-            <p style="font-weight:700;color:#64748b;font-size:0.95rem;">Membaca PDF...</p>
-            <p style="font-size:0.8rem;color:#94a3b8;">${file.name}</p>`;
+            <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:var(--primary-blue);"></i>
+            <p style="font-weight:700;color:var(--text-main);font-size:0.95rem;">Membaca PDF...</p>
+            <p style="font-size:0.8rem;color:var(--text-muted);">${file.name}</p>`;
         try {
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -113,6 +113,12 @@ function initSplitPdf(container = document) {
                 const arrayBuffer = await splitPdfFile.arrayBuffer();
                 const srcDoc = await PDFLib.PDFDocument.load(arrayBuffer);
                 
+                // Get custom filename
+                const renameInput = el('split-rename-input');
+                let baseName = renameInput && renameInput.value.trim() ? renameInput.value.trim() : 'JagaDokumen_Terpisah';
+                // Remove extension if user added it
+                baseName = baseName.replace(/\.pdf$/i, '');
+
                 if (currentSplitMode === 'extract') {
                     if (selectedSplitPages.size === 0) throw new Error('Pilih minimal 1 halaman');
                     const newDoc = await PDFLib.PDFDocument.create();
@@ -122,7 +128,7 @@ function initSplitPdf(container = document) {
                         p.setRotation(PDFLib.degrees(splitRotateStates[pagesToCopy[idx]] || 0));
                         newDoc.addPage(p);
                     });
-                    downloadFile(await newDoc.save(), 'JagaDokumen_Terpisah.pdf', 'application/pdf');
+                    downloadFile(await newDoc.save(), `${baseName}.pdf`, 'application/pdf');
                 } else if (currentSplitMode === 'burst') {
                     const zip = new JSZip();
                     for (let i = 0; i < srcDoc.getPageCount(); i++) {
@@ -130,10 +136,10 @@ function initSplitPdf(container = document) {
                         const [page] = await newDoc.copyPages(srcDoc, [i]);
                         page.setRotation(PDFLib.degrees(splitRotateStates[i + 1] || 0));
                         newDoc.addPage(page);
-                        zip.file(`Halaman_${i + 1}.pdf`, await newDoc.save());
+                        zip.file(`${baseName}_Halaman_${i + 1}.pdf`, await newDoc.save());
                     }
                     const zipBlob = await zip.generateAsync({ type: 'blob' });
-                    downloadFile(await resultDoc.save(), 'JagaDokumen_Split.pdf', 'application/pdf');
+                    downloadFile(zipBlob, `${baseName}_Semua.zip`, 'application/zip');
                 }
             } catch (err) {
                 alert('Error: ' + err.message);
@@ -156,14 +162,14 @@ function initSplitPdf(container = document) {
 
             const item = document.createElement('div');
             item.className = 'split-page-item';
-            item.style.cssText = 'background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; position: relative;';
+            item.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; position: relative;';
             item.innerHTML = `
-                <div class="split-page-preview" style="height: 140px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 6px; overflow: hidden; transition: transform 0.3s;">
+                <div class="split-page-preview" style="height: 140px; display: flex; align-items: center; justify-content: center; background: var(--bg-main); border-radius: 6px; overflow: hidden; transition: transform 0.3s;">
                     <img src="${canvas.toDataURL()}" style="max-width: 100%; max-height: 100%;">
                 </div>
-                <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; margin-top: 8px;">Hal ${i}</div>
-                <button class="btn-rot" style="position: absolute; bottom: 35px; right: 10px; width: 32px; height: 32px; background: #2563eb; color: white; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center;"><i class="ph ph-arrow-counter-clockwise"></i></button>
-                <div class="check" style="position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; background: #2563eb; color: white; border-radius: 50%; display: none; align-items: center; justify-content: center;"><i class="ph ph-check"></i></div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-top: 8px;">Hal ${i}</div>
+                <button class="btn-rot" style="position: absolute; bottom: 35px; right: 10px; width: 32px; height: 32px; background: var(--primary-blue); color: white; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center;"><i class="ph ph-arrow-counter-clockwise"></i></button>
+                <div class="check" style="position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; background: var(--primary-blue); color: white; border-radius: 50%; display: none; align-items: center; justify-content: center;"><i class="ph ph-check"></i></div>
             `;
 
             const preview = item.querySelector('.split-page-preview');
