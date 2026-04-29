@@ -3567,3 +3567,128 @@ canvas, .canvas-container {
 }
 
 /* End of file - Cleaned redundant animations */
+
+/* ==========================================================================
+   Super Editor Workspace Styles
+   ========================================================================== */
+.editor-workspace {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    background: var(--bg-main);
+}
+
+.ribbon-btn-pro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 10px;
+    min-width: 80px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-main);
+}
+
+.ribbon-btn-pro i {
+    font-size: 24px;
+    color: var(--primary-blue);
+}
+
+.ribbon-btn-pro span {
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.ribbon-btn-pro:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    transform: translateY(-2px);
+}
+
+.ribbon-btn-pro.large {
+    min-width: 100px;
+    padding: 15px 10px;
+}
+
+.ribbon-btn-pro.large i {
+    font-size: 32px;
+}
+
+/* Sidebar & Thumbnails */
+.editor-sidebar-left {
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.thumbnail-item {
+    width: 140px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.thumbnail-item:hover {
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+.thumbnail-item.active {
+    border-color: var(--primary-blue);
+    background: var(--color-blue-light);
+    box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
+}
+
+.thumbnail-canvas {
+    width: 100%;
+    height: auto;
+    background: white;
+    border-radius: 4px;
+    box-shadow: var(--shadow-sm);
+}
+
+.thumbnail-number {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+/* Status Bar Controls */
+.status-btn:hover {
+    color: var(--primary-blue) !important;
+    transform: scale(1.2);
+}
+
+/* Responsive adjustments for Super Editor */
+@media (max-width: 768px) {
+    .editor-sidebar-left {
+        width: 80px !important;
+    }
+    .editor-sidebar-left span, .sidebar-header span {
+        display: none;
+    }
+    .thumbnail-item {
+        width: 60px;
+        padding: 5px;
+    }
+    .ribbon-content {
+        padding: 10px !important;
+        overflow-x: auto;
+    }
+    .ribbon-group-label {
+        display: none;
+    }
+}
