@@ -1,6 +1,6 @@
 /**
  * Super Editor PDF Logic - Advanced Version
- * Handles multi-file merging, batch page selection, and advanced organization.
+ * Handles multi-file merging, batch page selection, and content insertion (Watermark/Page Numbers).
  */
 
 let editorState = {
@@ -75,6 +75,10 @@ function setupEditorButtons(container) {
     container.querySelector('#btn-editor-delete')?.addEventListener('click', () => deleteSelectedPages());
     container.querySelector('#btn-editor-split')?.addEventListener('click', () => extractSelectedPages());
     
+    // Sisipkan
+    container.querySelector('#btn-editor-page-nums')?.addEventListener('click', () => addPageNumbers());
+    container.querySelector('#btn-editor-watermark')?.addEventListener('click', () => addWatermark());
+
     // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {
         editorState.zoom += 0.1;
@@ -269,7 +273,6 @@ async function rotateActivePage(degrees) {
 async function deleteSelectedPages() {
     const selected = editorState.pages.filter(p => p.isSelected);
     if (!selected.length) {
-        // Fallback to active page if none selected
         const confirmDelete = confirm(`Hapus halaman ${editorState.currentPage}?`);
         if (confirmDelete) {
             editorState.pages.splice(editorState.currentPage - 1, 1);
@@ -293,22 +296,69 @@ async function extractSelectedPages() {
         return;
     }
 
-    const btn = editorState.container.querySelector('#btn-editor-split');
-    btn.disabled = true;
-
     try {
         const newDoc = await PDFLib.PDFDocument.create();
         for (const p of selected) {
             const [copiedPage] = await newDoc.copyPages(editorState.docs[p.docIndex], [p.index]);
             newDoc.addPage(copiedPage);
         }
-        
         const bytes = await newDoc.save();
         downloadBlob(bytes, `Extracted_Pages_${new Date().getTime()}.pdf`);
     } catch (err) {
         alert("Gagal mengekstrak halaman.");
-    } finally {
-        btn.disabled = false;
+    }
+}
+
+async function addPageNumbers() {
+    if (!editorState.docs.length) return;
+    
+    const confirmNum = confirm("Tambahkan nomor halaman di bagian bawah setiap halaman?");
+    if (!confirmNum) return;
+
+    try {
+        for (let i = 0; i < editorState.pages.length; i++) {
+            const p = editorState.pages[i];
+            const page = editorState.docs[p.docIndex].getPage(p.index);
+            const { width, height } = page.getSize();
+            const text = `Halaman ${i + 1} dari ${editorState.pages.length}`;
+            
+            page.drawText(text, {
+                x: width / 2 - 40,
+                y: 20,
+                size: 10,
+                color: PDFLib.rgb(0.5, 0.5, 0.5)
+            });
+        }
+        await syncAndRefresh();
+        alert("Nomor halaman berhasil ditambahkan!");
+    } catch (err) {
+        alert("Gagal menambahkan nomor halaman.");
+    }
+}
+
+async function addWatermark() {
+    const text = prompt("Masukkan teks untuk Watermark (Contoh: RAHASIA, DRAFT, MILIK NEGARA):", "RAHASIA");
+    if (!text) return;
+
+    try {
+        for (let i = 0; i < editorState.pages.length; i++) {
+            const p = editorState.pages[i];
+            const page = editorState.docs[p.docIndex].getPage(p.index);
+            const { width, height } = page.getSize();
+            
+            page.drawText(text, {
+                x: width / 4,
+                y: height / 2,
+                size: 50,
+                rotate: PDFLib.degrees(45),
+                opacity: 0.2,
+                color: PDFLib.rgb(0.7, 0, 0)
+            });
+        }
+        await syncAndRefresh();
+        alert("Watermark berhasil ditambahkan!");
+    } catch (err) {
+        alert("Gagal menambahkan watermark.");
     }
 }
 
@@ -323,7 +373,6 @@ async function exportEditedPdf() {
             const [copiedPage] = await finalDoc.copyPages(editorState.docs[p.docIndex], [p.index]);
             finalDoc.addPage(copiedPage);
         }
-        
         const bytes = await finalDoc.save();
         downloadBlob(bytes, `JagaDokumen_Pro_${new Date().getTime()}.pdf`);
     } catch (err) {
