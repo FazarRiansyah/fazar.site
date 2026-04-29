@@ -157,11 +157,12 @@ function setupEditorButtons(container) {
 
     container.querySelector('#btn-editor-rotate-cw')?.addEventListener('click', () => rotatePage(90));
     container.querySelector('#btn-editor-delete')?.addEventListener('click', () => deletePages());
-    container.querySelector('#btn-editor-split')?.addEventListener('click', () => extractPages());
-    
+    container.querySelector('#btn-editor-replace')?.addEventListener('click', () => triggerTool('Ganti Halaman PDF'));
+
     // Sisipkan
     container.querySelector('#btn-editor-page-nums')?.addEventListener('click', () => addPageNumbers());
     container.querySelector('#btn-editor-watermark')?.addEventListener('click', () => addWatermark());
+    container.querySelector('#btn-editor-img-to-pdf')?.addEventListener('click', () => triggerTool('Gambar ke PDF'));
 
     // Edit
     container.querySelector('#btn-editor-add-text')?.addEventListener('click', () => addTextToPdf());
@@ -173,9 +174,15 @@ function setupEditorButtons(container) {
         input.onchange = (e) => addStampToPdf(e.target.files[0]);
         input.click();
     });
+    container.querySelector('#btn-editor-pdf-to-img')?.addEventListener('click', () => triggerTool('PDF ke Gambar'));
+    container.querySelector('#btn-editor-pdf-to-txt')?.addEventListener('click', () => triggerTool('PDF to Text'));
 
     // Keamanan
     container.querySelector('#btn-editor-password')?.addEventListener('click', () => wipeMetadata());
+    container.querySelector('#btn-editor-unlock')?.addEventListener('click', () => triggerTool('Buka Kunci PDF')); // Assuming we have this
+
+    // Optimasi
+    container.querySelector('#btn-editor-compress')?.addEventListener('click', () => triggerTool('Kompres PDF'));
 
     // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {

@@ -3,6 +3,12 @@
  * Handles the display, search, and navigation of tools from within the editor.
  */
 
+// Global helper to open a tool in a new tab
+const triggerTool = (toolName) => {
+    const url = window.location.origin + window.location.pathname + `?tool=${encodeURIComponent(toolName)}`;
+    window.open(url, '_blank');
+};
+
 const initCatalogModal = () => {
     const catalogModal = document.getElementById('catalog-modal');
     const catalogBtn = document.getElementById('btn-show-catalog');
@@ -26,7 +32,7 @@ const initCatalogModal = () => {
         document.body.style.overflow = '';
     };
 
-    closeBtn.addEventListener('click', closeModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
     catalogModal.addEventListener('click', (e) => {
         if (e.target === catalogModal) closeModal();
     });
@@ -57,11 +63,9 @@ const initCatalogModal = () => {
                 </div>
             `;
 
-            // 4. Handle Tool Selection (New Tab Navigation)
+            // 4. Handle Tool Selection
             item.addEventListener('click', () => {
-                const toolName = title;
-                const url = window.location.origin + window.location.pathname + `?tool=${encodeURIComponent(toolName)}`;
-                window.open(url, '_blank');
+                triggerTool(title);
                 closeModal();
             });
 

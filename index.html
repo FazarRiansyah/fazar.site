@@ -509,6 +509,7 @@
                         <div class="ribbon-tab" data-tab="tab-insert" style="padding: 4px 12px; font-weight: 700; font-size: 0.7rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-plus-circle"></i> Sisipkan</div>
                         <div class="ribbon-tab" data-tab="tab-edit" style="padding: 4px 12px; font-weight: 700; font-size: 0.7rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-pencil-line"></i> Edit</div>
                         <div class="ribbon-tab" data-tab="tab-secure" style="padding: 4px 12px; font-weight: 700; font-size: 0.7rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-shield-check"></i> Keamanan</div>
+                        <div class="ribbon-tab" data-tab="tab-optimize" style="padding: 4px 12px; font-weight: 700; font-size: 0.7rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-lightning"></i> Optimasi</div>
                         <div class="ribbon-tab" data-tab="tab-catalog" id="btn-show-catalog" style="padding: 4px 12px; font-weight: 700; font-size: 0.7rem; cursor: pointer; color: var(--primary-blue); background: var(--color-blue-light); border-radius: 4px;"><i class="ph-bold ph-toolbox"></i> Katalog Alat</div>
                     </div>
                                <div class="ribbon-content" style="padding: 2px 15px; display: flex; align-items: center; justify-content: space-between;">
@@ -526,6 +527,11 @@
                                     <button class="ribbon-btn-pro" id="btn-editor-delete">
                                         <i class="ph-bold ph-trash"></i>
                                         <span>Hapus</span>
+                                    </button>
+                                </div>
+                                    <button class="ribbon-btn-pro" id="btn-editor-replace">
+                                        <i class="ph-bold ph-arrows-left-right"></i>
+                                        <span>Ganti Halaman</span>
                                     </button>
                                 </div>
                                 <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Halaman</div>
@@ -552,8 +558,12 @@
                                         <i class="ph-bold ph-stamp"></i>
                                         <span>Watermark</span>
                                     </button>
+                                    <button class="ribbon-btn-pro" id="btn-editor-img-to-pdf">
+                                        <i class="ph-bold ph-image"></i>
+                                        <span>Gambar ke PDF</span>
+                                    </button>
                                 </div>
-                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Anotasi</div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Anotasi & Media</div>
                             </div>
                         </div>
 
@@ -573,7 +583,22 @@
                                         <span>Stempel</span>
                                     </button>
                                 </div>
+                                </div>
                                 <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Edit Konten</div>
+                            </div>
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
+                                    <button class="ribbon-btn-pro" id="btn-editor-pdf-to-img">
+                                        <i class="ph-bold ph-file-image"></i>
+                                        <span>PDF ke Gambar</span>
+                                    </button>
+                                    <button class="ribbon-btn-pro" id="btn-editor-pdf-to-txt">
+                                        <i class="ph-bold ph-file-text"></i>
+                                        <span>PDF ke Teks</span>
+                                    </button>
+                                </div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Konversi</div>
+                            </div>
                             </div>
                         </div>
 
@@ -582,10 +607,26 @@
                                 <div class="ribbon-tools" style="display: flex; gap: 6px;">
                                     <button class="ribbon-btn-pro" id="btn-editor-password">
                                         <i class="ph-bold ph-lock"></i>
-                                        <span>Kunci Password</span>
+                                        <span>Password</span>
+                                    </button>
+                                    <button class="ribbon-btn-pro" id="btn-editor-unlock">
+                                        <i class="ph-bold ph-lock-open"></i>
+                                        <span>Buka Kunci</span>
                                     </button>
                                 </div>
                                 <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Proteksi</div>
+                            </div>
+                        </div>
+
+                        <div class="ribbon-panel" id="tab-optimize" style="display: none; gap: 15px;">
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
+                                    <button class="ribbon-btn-pro" id="btn-editor-compress">
+                                        <i class="ph-bold ph-arrows-in"></i>
+                                        <span>Kompres PDF</span>
+                                    </button>
+                                </div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Ukuran File</div>
                             </div>
                         </div>
 
