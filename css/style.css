@@ -3466,25 +3466,63 @@ canvas, .canvas-container {
     .tool-view-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 15px;
-        padding: 15px !important;
+        gap: 12px;
+        padding: 12px 16px !important;
+    }
+    
+    .btn-back {
+        width: auto;
+        padding: 8px 14px;
+        font-size: 0.75rem;
+    }
+    
+    .tool-view-title-wrapper {
+        margin: 5px 0;
+        gap: 10px;
+    }
+    
+    .tool-view-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+    
+    .tool-view-title-text h2 {
+        font-size: 1rem;
+    }
+    
+    .tool-view-title-text p {
+        font-size: 0.65rem;
     }
     
     .tool-view-actions {
         width: 100%;
-        justify-content: flex-start;
+        display: flex;
+        justify-content: flex-end;
     }
     
-    .tool-view-title-wrapper {
-        margin: 10px 0;
+    .footer-status {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+        background: var(--bg-secondary);
+        border-radius: 20px;
     }
     
     .upload-area {
-        padding: 40px 20px;
+        padding: 30px 15px;
+        margin: 10px;
     }
     
     .upload-area i {
-        font-size: 60px !important;
+        font-size: 50px !important;
+    }
+    
+    .upload-text h3 {
+        font-size: 1.1rem;
+    }
+    
+    .upload-text p {
+        font-size: 0.8rem;
     }
 }
 
