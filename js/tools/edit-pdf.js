@@ -1,5 +1,6 @@
 /**
- * Super Editor PDF Logic - Multi-Tab Professional Version (FIXED)
+ * Super Editor PDF Logic - Multi-Tab Professional Version
+ * Final Phase: Edit & Annotation (Text & Signature)
  */
 
 let editorState = {
@@ -39,7 +40,6 @@ async function initPdfEditor(container) {
 
 async function openNewDocument(file) {
     if (!file) return;
-    
     const container = editorState.container;
     const uploadView = container.querySelector('#pdf-upload-view');
     const editorView = container.querySelector('#pdf-editor-view');
@@ -85,7 +85,6 @@ async function switchTab(index) {
 
 async function closeTab(index, e) {
     if (e) e.stopPropagation();
-    
     editorState.docs.splice(index, 1);
     
     if (editorState.docs.length === 0) {
@@ -114,7 +113,6 @@ function renderTabs() {
         const tab = document.createElement('div');
         tab.className = `editor-tab ${index === editorState.activeDocIndex ? 'active' : ''}`;
         tab.onclick = () => switchTab(index);
-        
         tab.innerHTML = `
             <i class="ph-fill ph-file-pdf"></i>
             <span title="${doc.name}">${doc.name}</span>
@@ -148,6 +146,7 @@ function setupRibbonTabs(container) {
 }
 
 function setupEditorButtons(container) {
+    // Organisir
     container.querySelector('#btn-editor-merge')?.addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -159,9 +158,16 @@ function setupEditorButtons(container) {
     container.querySelector('#btn-editor-rotate-cw')?.addEventListener('click', () => rotatePage(90));
     container.querySelector('#btn-editor-delete')?.addEventListener('click', () => deletePages());
     container.querySelector('#btn-editor-split')?.addEventListener('click', () => extractPages());
+    
+    // Sisipkan
     container.querySelector('#btn-editor-page-nums')?.addEventListener('click', () => addPageNumbers());
     container.querySelector('#btn-editor-watermark')?.addEventListener('click', () => addWatermark());
 
+    // Edit
+    container.querySelector('#btn-editor-add-text')?.addEventListener('click', () => addTextToPdf());
+    container.querySelector('#btn-editor-add-sign')?.addEventListener('click', () => openSignatureModal());
+
+    // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {
         const doc = editorState.docs[editorState.activeDocIndex];
         doc.zoom += 0.1;
@@ -173,6 +179,7 @@ function setupEditorButtons(container) {
         renderActivePage();
     });
 
+    // Export
     container.querySelector('#btn-editor-export')?.addEventListener('click', () => exportPdf());
 }
 
@@ -189,9 +196,7 @@ async function renderThumbnails() {
         const item = document.createElement('div');
         item.className = `thumbnail-item ${pageNum === doc.currentPage ? 'active' : ''} ${pageData.isSelected ? 'selected' : ''}`;
         
-        // Use document.createElement to avoid innerHTML wiping
         const selectBadge = document.createElement('div');
-        selectBadge.className = 'select-badge';
         selectBadge.style.cssText = `position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.3)'}; z-index:10; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s;`;
         if (pageData.isSelected) selectBadge.innerHTML = '<i class="ph-bold ph-check"></i>';
         
@@ -270,7 +275,6 @@ async function rotatePage(degrees) {
 async function deletePages() {
     const doc = editorState.docs[editorState.activeDocIndex];
     const selected = doc.pages.filter(p => p.isSelected);
-    
     if (selected.length === 0) {
         if (confirm(`Hapus halaman ${doc.currentPage}?`)) {
             doc.pages.splice(doc.currentPage - 1, 1);
@@ -290,7 +294,6 @@ async function extractPages() {
     const doc = editorState.docs[editorState.activeDocIndex];
     const selected = doc.pages.filter(p => p.isSelected);
     if (!selected.length) { alert("Pilih halaman dulu!"); return; }
-
     try {
         const newDoc = await PDFLib.PDFDocument.create();
         const indices = selected.map(p => p.index);
@@ -317,6 +320,91 @@ async function addWatermark() {
         const page = doc.pdfLibDoc.getPage(doc.pages[i].index);
         page.drawText(text, { x: 100, y: 400, size: 50, rotate: PDFLib.degrees(45), opacity: 0.2 });
     }
+    await syncDoc(doc);
+}
+
+// Phase 5: Edit Logic
+async function addTextToPdf() {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const text = prompt("Masukkan teks yang ingin ditambahkan:");
+    if (!text) return;
+    
+    const page = doc.pdfLibDoc.getPage(doc.pages[doc.currentPage - 1].index);
+    page.drawText(text, {
+        x: 50,
+        y: page.getSize().height - 50,
+        size: 14,
+        color: PDFLib.rgb(0, 0, 0)
+    });
+    await syncDoc(doc);
+}
+
+function openSignatureModal() {
+    const template = document.getElementById('tpl-signature-modal');
+    if (!template) return;
+    
+    const modalClone = template.content.cloneNode(true);
+    document.body.appendChild(modalClone);
+    
+    const modal = document.getElementById('signatureModal');
+    const canvas = document.getElementById('signature-canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+
+    // Drawing Logic
+    const startDraw = (e) => {
+        drawing = true;
+        ctx.beginPath();
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        ctx.moveTo(x, y);
+    };
+    
+    const doDraw = (e) => {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        ctx.lineTo(x, y);
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+    };
+    
+    const stopDraw = () => drawing = false;
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', doDraw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', startDraw);
+    canvas.addEventListener('touchmove', doDraw);
+    canvas.addEventListener('touchend', stopDraw);
+
+    document.getElementById('btn-clear-signature').onclick = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    document.getElementById('btn-save-signature').onclick = async () => {
+        const signData = canvas.toDataURL('image/png');
+        await addSignatureToPdf(signData);
+        modal.remove();
+    };
+}
+
+async function addSignatureToPdf(dataUrl) {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const imageBytes = await fetch(dataUrl).then(res => res.arrayBuffer());
+    const pngImage = await doc.pdfLibDoc.embedPng(imageBytes);
+    
+    const page = doc.pdfLibDoc.getPage(doc.pages[doc.currentPage - 1].index);
+    const { width, height } = page.getSize();
+    
+    page.drawImage(pngImage, {
+        x: width - 150,
+        y: 50,
+        width: 100,
+        height: 50,
+    });
+    
     await syncDoc(doc);
 }
 
