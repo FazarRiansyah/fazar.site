@@ -1,5 +1,5 @@
 /**
- * Super Editor PDF Logic - Multi-Tab Professional Version
+ * Super Editor PDF Logic - Multi-Tab Professional Version (FIXED)
  */
 
 let editorState = {
@@ -148,7 +148,6 @@ function setupRibbonTabs(container) {
 }
 
 function setupEditorButtons(container) {
-    // Organisir
     container.querySelector('#btn-editor-merge')?.addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -160,12 +159,9 @@ function setupEditorButtons(container) {
     container.querySelector('#btn-editor-rotate-cw')?.addEventListener('click', () => rotatePage(90));
     container.querySelector('#btn-editor-delete')?.addEventListener('click', () => deletePages());
     container.querySelector('#btn-editor-split')?.addEventListener('click', () => extractPages());
-    
-    // Sisipkan
     container.querySelector('#btn-editor-page-nums')?.addEventListener('click', () => addPageNumbers());
     container.querySelector('#btn-editor-watermark')?.addEventListener('click', () => addWatermark());
 
-    // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {
         const doc = editorState.docs[editorState.activeDocIndex];
         doc.zoom += 0.1;
@@ -177,7 +173,6 @@ function setupEditorButtons(container) {
         renderActivePage();
     });
 
-    // Export
     container.querySelector('#btn-editor-export')?.addEventListener('click', () => exportPdf());
 }
 
@@ -194,8 +189,10 @@ async function renderThumbnails() {
         const item = document.createElement('div');
         item.className = `thumbnail-item ${pageNum === doc.currentPage ? 'active' : ''} ${pageData.isSelected ? 'selected' : ''}`;
         
+        // Use document.createElement to avoid innerHTML wiping
         const selectBadge = document.createElement('div');
-        selectBadge.style.cssText = `position:absolute; top:5px; right:5px; width:20px; height:20px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.2)'}; z-index:5; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;`;
+        selectBadge.className = 'select-badge';
+        selectBadge.style.cssText = `position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.3)'}; z-index:10; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s;`;
         if (pageData.isSelected) selectBadge.innerHTML = '<i class="ph-bold ph-check"></i>';
         
         selectBadge.onclick = (e) => {
@@ -214,13 +211,18 @@ async function renderThumbnails() {
         const canvas = document.createElement('canvas');
         canvas.className = 'thumbnail-canvas';
         const page = await doc.pdfJsDoc.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 0.2 });
+        const viewport = page.getViewport({ scale: 0.15 });
         canvas.width = viewport.width; canvas.height = viewport.height;
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
+        const label = document.createElement('span');
+        label.className = 'thumbnail-number';
+        label.textContent = `Halaman ${pageNum}`;
+        label.style.cssText = 'font-size: 0.7rem; font-weight: 800; color: var(--text-muted); margin-top: 8px;';
+
         item.appendChild(selectBadge);
         item.appendChild(canvas);
-        item.innerHTML += `<span class="thumbnail-number">Halaman ${pageNum}</span>`;
+        item.appendChild(label);
         list.appendChild(item);
     }
 }
@@ -319,8 +321,6 @@ async function addWatermark() {
 }
 
 async function syncDoc(doc) {
-    // We recreate pdfJsDoc from current pdfLibDoc state for rendering
-    // This is simplified: in reality we'd create a temporary doc based on `doc.pages`
     const tempDoc = await PDFLib.PDFDocument.create();
     for (const p of doc.pages) {
         const [copied] = await tempDoc.copyPages(doc.pdfLibDoc, [p.index]);
