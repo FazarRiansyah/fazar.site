@@ -19,6 +19,17 @@ const initApp = () => {
     // Auto-open tool from URL parameter (?tool=Name)
     try { handleUrlParams(); } catch(e) { console.error("URL Params failed", e); }
 
+    // Global Interaction Sounds & Effects
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('button, .btn, .tool-card, .btn-tool, .ribbon-btn-pro');
+        if (target) {
+            if (typeof JagaUX !== 'undefined') {
+                JagaUX.playPop();
+                JagaUX.pulseElement(target);
+            }
+        }
+    });
+
     // How it works listener
     const howBtn = document.getElementById('btn-how-it-works');
     if (howBtn) {

@@ -148,6 +148,39 @@
     100% { background-position: 200% 0; }
 }
 
+/* Premium Card Glow & Magnetic Feel */
+.tool-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.tool-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        800px circle at var(--mouse-x) var(--mouse-y),
+        rgba(255, 255, 255, 0.06),
+        transparent 40%
+    );
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tool-card:hover::before {
+    opacity: 1;
+}
+
+[data-theme="dark"] .tool-card::before {
+    background: radial-gradient(
+        800px circle at var(--mouse-x) var(--mouse-y),
+        rgba(255, 255, 255, 0.1),
+        transparent 40%
+    );
+}
+
 .glass-effect {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--blur-intensity)) saturate(180%);
@@ -166,6 +199,25 @@
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Premium Micro-Interactions */
+button, .btn, .tool-card, .btn-tool, .ribbon-btn-pro {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active, .btn:active, .btn-tool:active, .ribbon-btn-pro:active {
+    transform: scale(0.96) !important;
+}
+
+.tool-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-blue);
+}
+
+.tool-card:active {
+    transform: translateY(-4px) scale(0.98);
 }
 
 .stagger-1 { transition-delay: 0.1s; }
@@ -2840,7 +2892,6 @@ canvas, .canvas-container {
     border-radius: var(--border-radius-lg);
     padding: 80px 40px;
     text-align: center;
-    cursor: pointer;
     transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     display: flex;
     flex-direction: column;
@@ -3170,18 +3221,21 @@ canvas, .canvas-container {
     66% { transform: translate(-20px, 20px) scale(0.9); }
 }
 
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-
 .shimmer {
     background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0) 0%, 
-        rgba(255, 255, 255, 0.4) 50%, 
-        rgba(255, 255, 255, 0) 100%);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite linear;
+        rgba(255,255,255,0.03) 25%, 
+        rgba(255,255,255,0.08) 37%, 
+        rgba(255,255,255,0.03) 63%);
+    background-size: 400% 100%;
+    animation: glassShimmer 1.4s infinite linear;
+}
+
+[data-theme="light"] .shimmer {
+    background: linear-gradient(90deg, 
+        #f1f5f9 25%, 
+        #f8fafc 37%, 
+        #f1f5f9 63%);
+    background-size: 400% 100%;
 }
 
 [data-theme="dark"] .shimmer {
@@ -3752,11 +3806,223 @@ canvas, .canvas-container {
 .tab-close:hover {
     background: var(--color-red-light);
     color: var(--color-red);
+@media (max-width: 768px) {
+    .fluid-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .fluid-grid-3 { grid-template-columns: 1fr; gap: 12px; }
+}
+
+@media (max-width: 480px) {
+    .fluid-grid-5 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+
+/* End of file - Cleaned redundant animations */
+
+/* ==========================================================================
+   Super Editor Workspace Styles
+   ========================================================================== */
+.editor-workspace {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    overflow: hidden;
+    background: var(--bg-main);
+}
+
+.ribbon-btn-pro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 4px 8px;
+    min-width: 60px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-main);
+}
+
+.ribbon-btn-pro i {
+    font-size: 18px;
+    color: var(--primary-blue);
+}
+
+.ribbon-btn-pro span {
+    font-size: 0.6rem;
+    font-weight: 700;
+}
+
+.ribbon-btn-pro:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    transform: translateY(-2px);
+}
+
+.ribbon-btn-pro.large {
+    min-width: 100px;
+    padding: 15px 10px;
+}
+
+.ribbon-btn-pro.large i {
+    font-size: 32px;
+}
+
+/* Sidebar & Thumbnails */
+.editor-sidebar-left {
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.thumbnail-item {
+    width: 140px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.thumbnail-item:hover {
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+.thumbnail-item.active {
+    border-color: var(--primary-blue);
+    background: var(--color-blue-light);
+    box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
+}
+
+.thumbnail-canvas {
+    width: 100%;
+    height: auto;
+    background: white;
+    border-radius: 4px;
+    box-shadow: var(--shadow-sm);
+}
+
+.thumbnail-number {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+/* Status Bar Controls */
+.status-btn:hover {
+    color: var(--primary-blue) !important;
+    transform: scale(1.2);
+}
+
+/* Responsive adjustments for Super Editor */
+@media (max-width: 768px) {
+    .editor-sidebar-left {
+        width: 80px !important;
+    }
+    .editor-sidebar-left span, .sidebar-header span {
+        display: none;
+    }
+    .thumbnail-item {
+        width: 60px;
+        padding: 5px;
+    }
+    .ribbon-content {
+        padding: 10px !important;
+        overflow-x: auto;
+    }
+    .ribbon-group-label {
+        display: none;
+    }
+}
+
+/* Document Tabs Styles */
+.editor-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    max-width: 200px;
+    min-width: 120px;
+    transition: all 0.2s;
+    position: relative;
+    margin-top: 5px;
+}
+
+.editor-tab i {
+    font-size: 1rem;
+    color: var(--primary-blue);
+}
+
+.editor-tab span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editor-tab:hover {
+    background: var(--bg-card);
+    color: var(--text-main);
+}
+
+.editor-tab.active {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-top: 2px solid var(--primary-blue);
+}
+
+.tab-close {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.tab-close:hover {
+    background: var(--color-red-light);
+    color: var(--color-red);
 }
 
 /* ==========================================================================
    Tools Catalog Modal (Pop-up System)
    ========================================================================== */
+.catalog-modal-overlay#preloader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#preloader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.1);
+}
+
 .catalog-modal-overlay {
     position: fixed;
     top: 0;

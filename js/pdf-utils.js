@@ -53,6 +53,13 @@ function showToast(message, type = "success") {
         setTimeout(() => t.remove(), 300);
     });
 
+    // Play Sound if JagaUX is available
+    if (typeof JagaUX !== 'undefined') {
+        if (type === "success") JagaUX.playSuccess();
+        else if (type === "error") JagaUX.playError();
+        else JagaUX.playPop();
+    }
+
     const toast = document.createElement("div");
     toast.className = 'jaga-toast';
     
