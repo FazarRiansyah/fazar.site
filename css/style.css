@@ -2725,7 +2725,7 @@ canvas, .canvas-container {
 }
 
 .tool-view-header {
-    padding: 12px 30px;
+    padding: 16px 30px;
     background: var(--bg-header);
     backdrop-filter: blur(var(--blur-intensity)) saturate(180%);
     -webkit-backdrop-filter: blur(var(--blur-intensity)) saturate(180%);
@@ -2742,14 +2742,14 @@ canvas, .canvas-container {
 .btn-back {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
+    gap: 10px;
+    padding: 10px 20px;
     border-radius: var(--border-radius-full);
     border: 1px solid var(--border-color);
     background: var(--bg-card);
     color: var(--text-main);
     font-weight: 700;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2767,7 +2767,7 @@ canvas, .canvas-container {
 .tool-view-title-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -2775,19 +2775,19 @@ canvas, .canvas-container {
 }
 
 .tool-view-icon {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
     background: var(--color-blue-light);
     color: var(--primary-blue);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 22px;
 }
 
 .tool-view-title-text h2 {
-    font-size: 0.9rem;
+    font-size: 1.15rem;
     font-weight: 700;
     margin: 0;
     color: var(--text-main);
@@ -2807,8 +2807,8 @@ canvas, .canvas-container {
 
 .tool-view-actions .footer-status {
     background: var(--color-green-light);
-    padding: 2px 10px;
-    font-size: 0.65rem;
+    padding: 6px 14px;
+    font-size: 0.8rem;
 }
     border-radius: var(--border-radius-full);
     font-size: 0.8rem;
