@@ -179,6 +179,22 @@ function setupEditorButtons(container) {
         renderActivePage();
     });
 
+    // Navigation
+    container.querySelector('#btn-editor-prev')?.addEventListener('click', () => {
+        const doc = editorState.docs[editorState.activeDocIndex];
+        if (doc.currentPage > 1) {
+            doc.currentPage--;
+            refreshUI();
+        }
+    });
+    container.querySelector('#btn-editor-next')?.addEventListener('click', () => {
+        const doc = editorState.docs[editorState.activeDocIndex];
+        if (doc.currentPage < doc.pages.length) {
+            doc.currentPage++;
+            refreshUI();
+        }
+    });
+
     // Export
     container.querySelector('#btn-editor-export')?.addEventListener('click', () => exportPdf());
 }
@@ -195,9 +211,11 @@ async function renderThumbnails() {
         
         const item = document.createElement('div');
         item.className = `thumbnail-item ${pageNum === doc.currentPage ? 'active' : ''} ${pageData.isSelected ? 'selected' : ''}`;
+        item.style.cssText = 'width: 120px; display: flex; flex-direction: column; align-items: center; position: relative; cursor: pointer;';
         
         const selectBadge = document.createElement('div');
-        selectBadge.style.cssText = `position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.3)'}; z-index:10; display:flex; align-items:center; justify-content:center; color:white; font-size:12px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s;`;
+        selectBadge.className = 'select-badge';
+        selectBadge.style.cssText = `position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.3)'}; z-index:10; display:flex; align-items:center; justify-content:center; color:white; font-size:10px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);`;
         if (pageData.isSelected) selectBadge.innerHTML = '<i class="ph-bold ph-check"></i>';
         
         selectBadge.onclick = (e) => {
@@ -215,8 +233,9 @@ async function renderThumbnails() {
 
         const canvas = document.createElement('canvas');
         canvas.className = 'thumbnail-canvas';
+        canvas.style.cssText = 'width: 100%; height: auto; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: white;';
         const page = await doc.pdfJsDoc.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 0.15 });
+        const viewport = page.getViewport({ scale: 0.12 });
         canvas.width = viewport.width; canvas.height = viewport.height;
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
