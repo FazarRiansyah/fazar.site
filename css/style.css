@@ -2725,7 +2725,7 @@ canvas, .canvas-container {
 }
 
 .tool-view-header {
-    padding: 4px 20px;
+    padding: 12px 30px;
     background: var(--bg-header);
     backdrop-filter: blur(var(--blur-intensity)) saturate(180%);
     -webkit-backdrop-filter: blur(var(--blur-intensity)) saturate(180%);
@@ -2767,7 +2767,7 @@ canvas, .canvas-container {
 .tool-view-title-wrapper {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -2807,7 +2807,9 @@ canvas, .canvas-container {
 
 .tool-view-actions .footer-status {
     background: var(--color-green-light);
-    padding: 6px 14px;
+    padding: 2px 10px;
+    font-size: 0.65rem;
+}
     border-radius: var(--border-radius-full);
     font-size: 0.8rem;
     color: var(--color-green);
@@ -3584,24 +3586,24 @@ canvas, .canvas-container {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 4px;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 12px;
-    padding: 10px;
-    min-width: 80px;
+    border-radius: 8px;
+    padding: 4px 8px;
+    min-width: 60px;
     cursor: pointer;
     transition: all 0.2s;
     color: var(--text-main);
 }
 
 .ribbon-btn-pro i {
-    font-size: 24px;
+    font-size: 18px;
     color: var(--primary-blue);
 }
 
 .ribbon-btn-pro span {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 700;
 }
 

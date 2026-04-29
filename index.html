@@ -501,7 +501,7 @@
             </div>
 
             <!-- Editor Workspace (Full Screen / Sticky UI) -->
-            <div id="pdf-editor-view" class="editor-workspace" style="display: none; flex-direction: column; height: calc(100vh - 60px); overflow: hidden; background: var(--bg-main);">
+            <div id="pdf-editor-view" class="editor-workspace" style="display: none; flex-direction: column; height: calc(100vh - 80px); overflow: hidden; background: var(--bg-main);">
                 <!-- 1. Top Ribbon Toolbar -->
                 <div class="editor-ribbon" style="background: var(--bg-card); border-bottom: 1px solid var(--border-color); flex-shrink: 0;">
                     <div class="ribbon-tabs" style="padding: 0 20px; display: flex; gap: 4px; border-bottom: 1px solid var(--border-color);">
@@ -511,11 +511,10 @@
                         <div class="ribbon-tab" data-tab="tab-secure" style="padding: 4px 12px; font-weight: 700; font-size: 0.7rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-shield-check"></i> Keamanan</div>
                     </div>
                                <div class="ribbon-content" style="padding: 2px 15px; display: flex; align-items: center; justify-content: space-between;">
-                        <!-- Panel: Organisir -->
-                        <div class="ribbon-panel active" id="tab-organize" style="display: flex; gap: 30px;">
-                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                <div class="ribbon-tools" style="display: flex; gap: 10px;">
-                                    <button class="ribbon-btn-pro large" id="btn-editor-merge">
+                        <div class="ribbon-panel active" id="tab-organize" style="display: flex; gap: 15px;">
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
+                                    <button class="ribbon-btn-pro" id="btn-editor-merge">
                                         <i class="ph-bold ph-plus-circle"></i>
                                         <span>Tambah File</span>
                                     </button>
@@ -528,23 +527,22 @@
                                         <span>Hapus</span>
                                     </button>
                                 </div>
-                                <div class="ribbon-group-label" style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Halaman</div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Halaman</div>
                             </div>
-                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                <div class="ribbon-tools" style="display: flex; gap: 10px;">
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
                                     <button class="ribbon-btn-pro" id="btn-editor-split">
                                         <i class="ph-bold ph-scissors"></i>
                                         <span>Ekstrak</span>
                                     </button>
                                 </div>
-                                <div class="ribbon-group-label" style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Pisahkan</div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Pisahkan</div>
                             </div>
                         </div>
 
-                        <!-- Panel: Sisipkan -->
-                        <div class="ribbon-panel" id="tab-insert" style="display: none; gap: 30px;">
-                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                <div class="ribbon-tools" style="display: flex; gap: 10px;">
+                        <div class="ribbon-panel" id="tab-insert" style="display: none; gap: 15px;">
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
                                     <button class="ribbon-btn-pro" id="btn-editor-page-nums">
                                         <i class="ph-bold ph-list-numbers"></i>
                                         <span>Nomor Halaman</span>
@@ -554,14 +552,13 @@
                                         <span>Watermark</span>
                                     </button>
                                 </div>
-                                <div class="ribbon-group-label" style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Anotasi</div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Anotasi</div>
                             </div>
                         </div>
 
-                        <!-- Panel: Edit -->
-                        <div class="ribbon-panel" id="tab-edit" style="display: none; gap: 30px;">
-                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                <div class="ribbon-tools" style="display: flex; gap: 10px;">
+                        <div class="ribbon-panel" id="tab-edit" style="display: none; gap: 15px;">
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
                                     <button class="ribbon-btn-pro" id="btn-editor-add-text">
                                         <i class="ph-bold ph-text-t"></i>
                                         <span>Tambah Teks</span>
@@ -575,20 +572,19 @@
                                         <span>Stempel</span>
                                     </button>
                                 </div>
-                                <div class="ribbon-group-label" style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Edit Konten</div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Edit Konten</div>
                             </div>
                         </div>
 
-                        <!-- Panel: Keamanan -->
-                        <div class="ribbon-panel" id="tab-secure" style="display: none; gap: 30px;">
-                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                <div class="ribbon-tools" style="display: flex; gap: 10px;">
+                        <div class="ribbon-panel" id="tab-secure" style="display: none; gap: 15px;">
+                            <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                                <div class="ribbon-tools" style="display: flex; gap: 6px;">
                                     <button class="ribbon-btn-pro" id="btn-editor-password">
                                         <i class="ph-bold ph-lock"></i>
                                         <span>Kunci Password</span>
                                     </button>
                                 </div>
-                                <div class="ribbon-group-label" style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Proteksi</div>
+                                <div class="ribbon-group-label" style="font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Proteksi</div>
                             </div>
                         </div>
 
