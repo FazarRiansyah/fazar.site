@@ -16,27 +16,84 @@
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
+    <!-- PWA & Mobile Meta -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007aff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="light-mode">
+    <!-- Premium Preloader -->
+    <div id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="44" height="44" style="color: white;">
+                    <path fill="currentColor" d="M208 42H48a14 14 0 0 0-14 14v56c0 51.94 25.12 83.4 46.2 100.64c22.73 18.6 45.27 24.89 46.22 25.15a6 6 0 0 0 3.16 0c.95-.26 23.49-6.55 46.22-25.15C196.88 195.4 222 163.94 222 112V56a14 14 0 0 0-14-14m2 70c0 37.76-13.94 68.39-41.44 91.06A131.2 131.2 0 0 1 128 225.72a131 131 0 0 1-40.56-22.66C59.94 180.39 46 149.76 46 112V56a2 2 0 0 1 2-2h160a2 2 0 0 1 2 2Zm-37.76-12.24a6 6 0 0 1 0 8.48l-56 56a6 6 0 0 1-8.48 0l-24-24a6 6 0 0 1 8.48-8.48L112 151.51l51.76-51.75a6 6 0 0 1 8.48 0" />
+                </svg>
+            </div>
+            <div class="preloader-bar-container">
+                <div class="preloader-bar"></div>
+            </div>
+            <span class="preloader-text">Menyiapkan Keamanan...</span>
+        </div>
+    </div>
+
+    <!-- Apple Dynamic Mesh Background -->
+    <div class="dynamic-bg-container">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+        <div class="bg-blob blob-4"></div>
+    </div>
+
+    <!-- Apple Spotlight Search Overlay -->
+    <div id="search-overlay" class="search-overlay">
+        <div class="search-modal-container">
+            <div class="search-modal-header">
+                <i class="ph-light ph-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="Temukan alat atau fitur #JagaDokumen..." autocomplete="off">
+                <div class="search-shortcut-hint">ESC</div>
+            </div>
+            <div class="search-results-container">
+                <div class="search-results-header">HASIL PENCARIAN</div>
+                <div id="search-results-list" class="search-results-list">
+                    <!-- Dynamic results injected here -->
+                </div>
+            </div>
+            <div class="search-modal-footer">
+                <div class="footer-hint"><span>↑↓</span> Navigasi</div>
+                <div class="footer-hint"><span>Enter</span> Pilih</div>
+                <div class="footer-hint"><span>Esc</span> Tutup</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="site-header">
+        <div id="scroll-progress" style="position: absolute; top: 0; left: 0; height: 3px; background: var(--primary-gradient); width: 0; z-index: 1001; transition: width 0.1s ease;"></div>
         <div class="header-container">
-            <div class="logo">
-                <div class="logo-icon"><i class="ph-fill ph-shield-check"></i></div>
+            <div class="logo" onclick="location.reload()" style="cursor:pointer">
+                <div class="logo-icon"><i class="ph-light ph-shield-check"></i></div>
                 <span class="logo-text">#JagaDokumen</span>
             </div>
+
             <div class="nav-actions">
+                <div class="header-search">
+                    <i class="ph-light ph-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInputTrigger" placeholder="Cari Alat & Fitur (Ctrl + K)" readonly>
+                </div>
                 <div class="badge-status">
                     <span class="dot green"></span> 100% Lokal — Tanpa Upload Server
                 </div>
                 <div class="badge-status">
                     <span class="dot green"></span> Mode Offline
                 </div>
-                <div class="theme-status-maintenance" style="display: flex; align-items: center; gap: 8px; background: rgba(245, 158, 11, 0.05); padding: 8px 14px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2); margin-left: 10px;">
-                    <i class="ph-fill ph-moon" style="color: #f59e0b; font-size: 1.1rem;"></i>
-                    <span style="color: #f59e0b; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; white-space: nowrap;">DARK MODE (MAINTENANCE)</span>
+                <div class="theme-status-maintenance">
+                    <i class="ph-fill ph-moon"></i>
+                    <span>DARK MODE (MAINTENANCE)</span>
                 </div>
             </div>
         </div>
@@ -46,43 +103,43 @@
         <!-- Dashboard View -->
         <div id="dashboard-view">
             <!-- Hero Section -->
-        <section class="hero">
+        <section class="hero reveal">
             <div class="hero-content">
-                <div class="hero-badge"><i class="ph-fill ph-lock-key"></i> PRIVACY-FIRST DOCUMENT TOOLS</div>
+                <div class="hero-badge"><i class="ph-light ph-lock-key"></i> PRIVACY-FIRST DOCUMENT TOOLS</div>
                 <h1 class="hero-title">Kelola Dokumen Anda Tanpa Risiko Kebocoran Data</h1>
                 <p class="hero-desc">Semua alat berjalan 100% di browser Anda. File tidak pernah dikirim ke server manapun.<br>Privasi dan keamanan data terjaga sepenuhnya.</p>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary" id="btn-start-now"><i class="ph-fill ph-lightning"></i> Mulai Pakai</button>
-                    <button class="btn btn-white-outline" id="btn-how-it-works"><i class="ph ph-magnifying-glass"></i> Cara Kerjanya</button>
+                    <a href="#tools-section-anchor" class="btn btn-primary" id="btn-start-now">Mulai Pakai <i class="ph-light ph-arrow-right"></i></a>
+                    <button class="btn btn-white-outline" id="btn-how-it-works"><i class="ph-light ph-magnifying-glass"></i> Cara Kerjanya</button>
                 </div>
             </div>
             <div class="hero-illustration">
                 <!-- Abstract Shield Illustration -->
                 <div class="shield-container">
-                    <i class="ph-fill ph-shield-check shield-icon"></i>
+                    <i class="ph-light ph-shield-check shield-icon"></i>
                 </div>
             </div>
         </section>
 
         <!-- Stats Section -->
-        <section class="stats-grid">
+        <section class="stats-grid reveal">
 
             <div class="stat-card">
-                <div class="stat-icon"><i class="ph-fill ph-check-square text-green"></i></div>
+                <div class="stat-icon"><i class="ph-light ph-check-square text-green"></i></div>
                 <div class="stat-info">
                     <h3 class="text-green" id="stat-tool-count">0</h3>
                     <p>Fitur Tersedia</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><i class="ph-fill ph-cloud-slash text-orange"></i></div>
+                <div class="stat-icon"><i class="ph-light ph-cloud-slash text-orange"></i></div>
                 <div class="stat-info">
                     <h3 class="text-orange">0 Byte</h3>
                     <p>Data ke Server</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon"><i class="ph-fill ph-lightning text-purple"></i></div>
+                <div class="stat-icon"><i class="ph-light ph-lightning text-purple"></i></div>
                 <div class="stat-info">
                     <h3 class="text-purple">100%</h3>
                     <p>Proses di Browser</p>
@@ -90,25 +147,29 @@
             </div>
         </section>
 
-            <section class="tools-section" id="tools-section-anchor">
+            <section class="tools-section reveal" id="tools-section-anchor">
             <div class="tools-header">
-                <h2><i class="ph-fill ph-toolbox"></i> Semua Alat</h2>
-                <span class="tool-count">17 alat tersedia</span>
+                <h2><i class="ph-light ph-toolbox"></i> Semua Alat</h2>
             </div>
 
-            <div class="search-container">
-                <i class="ph ph-magnifying-glass search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Cari alat... ketik nama atau kategori [Ctrl+K]">
+
+
+            <div id="search-empty-state" style="display: none; text-align: center; padding: 60px 20px; animation: viewFadeIn 0.5s ease;">
+                <div style="font-size: 64px; color: var(--text-muted); margin-bottom: 16px; opacity: 0.5;">
+                    <i class="ph-light ph-magnifying-glass"></i>
+                </div>
+                <h3 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 8px;">Tidak Ada Alat Ditemukan</h3>
+                <p style="color: var(--text-muted);">Coba cari dengan kata kunci lain, misalnya "PDF" atau "Gambar".</p>
             </div>
 
-            <section class="tools-category-section">
-                <h2 style="font-size: 1.2rem; color: var(--text-main); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                    <i class="ph-fill ph-file-pdf" style="color: var(--primary-red);"></i> Alat Dokumen PDF
+            <section class="tools-category-section reveal">
+                <h2 class="tools-category-title">
+                    <i class="ph-light ph-file-pdf" style="color: var(--color-red);"></i> Alat Dokumen PDF
                 </h2>
                 <div class="tools-grid" id="tools-grid-pdf">
                     <div class="tool-card maintenance" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon" style="background: #eff6ff; color: #2563eb;"><i class="ph-fill ph-note-pencil"></i></div>
+                            <div class="tool-icon" style="background: #eff6ff; color: #2563eb;"><i class="ph-light ph-note-pencil"></i></div>
                             <div class="tool-meta">
                                 <span class="tool-type" style="background: #fff1f2; color: #e11d48; border-color: #fecdd3;">Maintenance</span>
                                 <span class="tool-type">PDF</span>
@@ -118,171 +179,171 @@
                             <h3>Edit PDF</h3>
                             <p>Fitur ini sedang dalam pemeliharaan untuk peningkatan performa. Silakan kembali lagi nanti.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool" disabled style="opacity: 0.5; cursor: not-allowed; background: var(--bg-main); color: var(--text-muted); border-color: var(--border-color);">Sedang Perbaikan <i class="ph ph-hammer"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool" disabled style="opacity: 0.5; cursor: not-allowed; background: var(--bg-main); color: var(--text-muted); border-color: var(--border-color);">Sedang Perbaikan <i class="ph-light ph-hammer"></i></button></div>
                     </div>
-                    <div class="tool-card" data-category="pdf">
+                    <div class="tool-card stagger-1" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-file-pdf"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-file-pdf"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Gabungkan PDF</h3>
                             <p>Gabungkan beberapa file PDF menjadi satu dokumen tunggal.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
-                    <div class="tool-card" data-category="pdf">
+                    <div class="tool-card stagger-2" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-scissors"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-scissors"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Pisahkan PDF</h3>
                             <p>Pisahkan PDF menjadi beberapa file dengan rentang halaman.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
-                    <div class="tool-card" data-category="pdf">
+                    <div class="tool-card stagger-3" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-arrows-clockwise"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-arrows-clockwise"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Putar Halaman PDF</h3>
                             <p>Putar halaman PDF ke kiri, kanan, atau 180&deg;.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-file-x"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-file-x"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Hapus Halaman PDF</h3>
                             <p>Pilih dan hapus halaman yang tidak diperlukan secara visual.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-arrows-left-right"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-arrows-left-right"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Ganti Halaman PDF</h3>
                             <p>Tukar halaman tertentu dengan halaman dari file PDF lain secara presisi.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-list-numbers"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-list-numbers"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Nomor Halaman PDF</h3>
                             <p>Tambahkan nomor halaman otomatis ke PDF.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-arrows-in"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-arrows-in"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Kompres PDF</h3>
                             <p>Kecilkan ukuran file PDF dengan pintar tanpa merusak teks.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="pdf">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-file-pdf"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-file-pdf"></i></div>
                             <div class="tool-meta"><span class="tool-type">PDF</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>PDF to Text</h3>
                             <p>Ekstrak teks murni dari dalam file PDF.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
                 </div>
             </section>
 
             <section class="tools-category-section">
-                <h2 style="font-size: 1.2rem; color: var(--text-main); margin-top: 32px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                    <i class="ph-fill ph-image" style="color: var(--primary-blue);"></i> Alat Visual & Gambar
+                <h2 class="tools-category-title">
+                    <i class="ph-light ph-image" style="color: var(--primary-blue);"></i> Alat Visual & Gambar
                 </h2>
                 <div class="tools-grid" id="tools-grid-image">
                     <div class="tool-card" data-category="gambar">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-image"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-image"></i></div>
                             <div class="tool-meta"><span class="tool-type">Gambar</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Gambar ke PDF</h3>
                             <p>Konversi JPG, PNG, WebP menjadi file PDF.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="gambar">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-image"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-image"></i></div>
                             <div class="tool-meta"><span class="tool-type">Gambar</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>PDF ke Gambar</h3>
                             <p>Konversi setiap halaman PDF menjadi gambar PNG.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     
 
                     <div class="tool-card" data-category="gambar">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-arrows-in"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-arrows-in"></i></div>
                             <div class="tool-meta"><span class="tool-type">Gambar</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Kompres Gambar</h3>
                             <p>Kurangi ukuran file gambar tanpa kehilangan kualitas.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="gambar">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-frame-corners"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-frame-corners"></i></div>
                             <div class="tool-meta"><span class="tool-type">Gambar</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Resize Gambar</h3>
                             <p>Ubah resolusi atau dimensi gambar dengan mudah.</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
 
                     <div class="tool-card" data-category="gambar">
                         <div class="tool-card-header">
-                            <div class="tool-icon"><i class="ph-fill ph-arrows-counter-clockwise"></i></div>
+                            <div class="tool-icon"><i class="ph-light ph-arrows-counter-clockwise"></i></div>
                             <div class="tool-meta"><span class="tool-type">Gambar</span></div>
                         </div>
                         <div class="tool-card-body">
                             <h3>Konversi Gambar</h3>
                             <p>Ubah format gambar (PNG, JPG, WebP, BMP).</p>
                         </div>
-                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph ph-arrow-right"></i></button></div>
+                        <div class="tool-card-footer"><button class="btn-tool">Buka Alat <i class="ph-light ph-arrow-right"></i></button></div>
                     </div>
                 </div>
             </section>
@@ -294,14 +355,14 @@
         <!-- Privacy Section -->
         <section class="privacy-section">
             <div class="privacy-header">
-                <h2><i class="ph-fill ph-shield-check" style="color: var(--color-green);"></i> Privasi Anda Adalah Prioritas Kami</h2>
+                <h2><i class="ph-light ph-shield-check" style="color: var(--color-green);"></i> Privasi Anda Adalah Prioritas Kami</h2>
                 <p>#JagaDokumen dirancang dengan arsitektur "Privacy-First" untuk memastikan data Anda tetap menjadi milik Anda sepenuhnya.</p>
             </div>
             
             <div class="privacy-grid">
                 <div class="privacy-item">
                     <div class="privacy-item-icon">
-                        <i class="ph-fill ph-user-focus"></i>
+                        <i class="ph-light ph-user-focus"></i>
                     </div>
                     <h4>100% Pemrosesan Lokal</h4>
                     <p>Semua manipulasi PDF dan gambar dilakukan langsung di browser Anda. File tidak pernah diunggah ke server mana pun.</p>
@@ -309,7 +370,7 @@
                 
                 <div class="privacy-item">
                     <div class="privacy-item-icon" style="background: var(--color-orange-light); color: var(--color-orange);">
-                        <i class="ph-fill ph-database"></i>
+                        <i class="ph-light ph-database"></i>
                     </div>
                     <h4>Tanpa Penyimpanan Data</h4>
                     <p>Kami tidak memiliki database. File Anda akan hilang dari memori browser segera setelah Anda menutup tab atau refresh halaman.</p>
@@ -317,7 +378,7 @@
                 
                 <div class="privacy-item">
                     <div class="privacy-item-icon" style="background: var(--color-purple-light); color: var(--color-purple);">
-                        <i class="ph-fill ph-wifi-slash"></i>
+                        <i class="ph-light ph-wifi-slash"></i>
                     </div>
                     <h4>Bekerja Tanpa Internet</h4>
                     <p>Setelah halaman dimuat, Anda bisa mematikan koneksi internet dan alat-alat kami akan tetap berfungsi dengan normal.</p>
@@ -333,7 +394,7 @@
         <div class="tool-view-container">
             <div class="tool-view-header">
                 <button class="btn-back" id="btn-back-dashboard">
-                    <i class="ph ph-arrow-left"></i> Kembali ke Beranda
+                    <i class="ph-light ph-arrow-left"></i> Kembali ke Beranda
                 </button>
                 <div class="tool-view-title-wrapper">
                     <div class="tool-view-icon" id="toolViewIcon"></div>
@@ -344,7 +405,7 @@
                 </div>
                 <div class="tool-view-actions">
                     <div class="footer-status">
-                        <i class="ph-fill ph-shield-check"></i> Aman & Lokal
+                        <i class="ph-light ph-shield-check"></i> Aman & Lokal
                     </div>
                 </div>
             </div>
@@ -358,7 +419,7 @@
         <div class="footer-container">
             <div class="footer-top">
                 <div class="footer-brand">
-                    <div class="logo-icon small"><i class="ph-fill ph-shield-check"></i></div>
+                    <div class="logo-icon small"><i class="ph-light ph-shield-check"></i></div>
                     <strong>#JagaDokumen</strong>
                 </div>
                 <div class="footer-social">
@@ -393,7 +454,7 @@
         <div class="modal-box fade-in-up">
             <div class="modal-header">
                 <div class="modal-title-wrapper">
-                    <div class="modal-icon" id="modalIcon"><i class="ph-fill ph-toolbox"></i></div>
+                    <div class="modal-icon" id="modalIcon"><i class="ph-light ph-toolbox"></i></div>
                     <div>
                         <h2 id="modalTitle">Nama Alat</h2>
                         <p id="modalCategory" class="tool-type">KATEGORI</p>
@@ -406,7 +467,7 @@
             </div>
             <div class="modal-footer">
                 <div class="footer-status">
-                    <i class="ph-fill ph-shield-check"></i> Aman & Lokal
+                    <i class="ph-light ph-shield-check"></i> Aman & Lokal
                 </div>
             </div>
         </div>
@@ -418,7 +479,7 @@
             <!-- Initial Upload View -->
             <div id="pdf-upload-view" class="pdf-tool-container">
                 <div class="upload-area" id="edit-upload-area">
-                    <i class="ph-fill ph-pencil-simple"></i>
+                    <i class="ph-light ph-pencil-simple"></i>
                     <h3>Pilih file PDF untuk di-edit</h3>
                     <p>Tambahkan teks, gambar, atau tanda tangan secara lokal di browser Anda</p>
                     <div class="btn btn-primary">
@@ -549,21 +610,22 @@
                         <!-- Ribbon Actions (Zoom, Nav, Save) -->
                         <div class="ribbon-actions">
                             <div class="zoom-controls">
-                                <button class="zoom-btn" id="btn-zoom-out"><i class="ph ph-minus"></i></button>
+                                <button class="zoom-btn" id="btn-zoom-out"><i class="ph-light ph-minus"></i></button>
                                 <span id="zoom-indicator" style="font-size: 0.8rem; font-weight: 800; min-width: 45px; text-align: center;">100%</span>
-                                <button class="zoom-btn" id="btn-zoom-in"><i class="ph ph-plus"></i></button>
+                                <button class="zoom-btn" id="btn-zoom-in"><i class="ph-light ph-plus"></i></button>
                             </div>
                             
                             <div class="toolbar-divider" style="height: 30px; width: 1px; background: var(--border-color);"></div>
                             
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <button class="btn btn-outline small" id="btn-prev-page"><i class="ph ph-caret-left"></i></button>
+                                <button class="btn btn-outline small" id="btn-prev-page"><i class="ph-light ph-caret-left"></i></button>
                                 <span id="page-indicator" style="font-size: 0.8rem; font-weight: 800;">1 / 1</span>
-                                <button class="btn btn-outline small" id="btn-next-page"><i class="ph ph-caret-right"></i></button>
+                                <button class="btn btn-outline" id="btn-next-page"><i class="ph-light ph-caret-right"></i></button>
+                                <button class="btn btn-outline" id="btn-how-it-works">Cara Kerja <i class="ph-light ph-info"></i></button>
                             </div>
 
                             <button class="btn btn-primary" id="btn-export-pdf" style="padding: 10px 20px; font-size: 0.85rem;">
-                                <i class="ph-fill ph-download-simple"></i> Simpan PDF
+                                <i class="ph-light ph-download-simple"></i> Simpan PDF
                             </button>
                         </div>
                     </div>
@@ -572,14 +634,14 @@
                 <!-- Document Tabs Bar (Now below Ribbon) -->
                 <div class="doc-tabs-bar">
                     <div class="doc-tab tool-name-tab active">
-                        <i class="ph-bold ph-pencil-simple"></i> Edit
+                        <i class="ph-light ph-pencil-simple"></i> Edit
                     </div>
                     <!-- Dynamic Tabs Container -->
                     <div id="tabs-container" style="display: flex; gap: 4px;">
                         <!-- Tabs injected here -->
                     </div>
                     <button class="btn-add-tab" id="btn-add-new-tab" title="Buka File PDF Baru">
-                        <i class="ph ph-plus"></i>
+                        <i class="ph-light ph-plus"></i>
                     </button>
                     <!-- Hidden input for additional files -->
                     <input type="file" id="extra-pdf-input" accept="application/pdf" style="display: none;">
@@ -642,12 +704,12 @@
 
                     <!-- Object Layering -->
                     <div class="prop-group" id="prop-layering" style="display: none;">
-                        <button class="prop-btn" id="btn-bring-front" title="Bawa ke Depan"><i class="ph-bold ph-intersect"></i></button>
-                        <button class="prop-btn" id="btn-send-back" title="Kirim ke Belakang"><i class="ph-bold ph-exclude"></i></button>
+                        <button class="prop-btn" id="btn-bring-front" title="Bawa ke Depan"><i class="ph-light ph-intersect"></i></button>
+                        <button class="prop-btn" id="btn-send-back" title="Kirim ke Belakang"><i class="ph-light ph-exclude"></i></button>
                     </div>
 
                     <div class="prop-group">
-                        <button class="prop-btn text-red" id="delete-btn" title="Hapus Objek"><i class="ph-bold ph-trash"></i></button>
+                        <button class="prop-btn text-red" id="delete-btn" title="Hapus Objek"><i class="ph-light ph-trash"></i></button>
                     </div>
                 </div>
 
@@ -668,7 +730,7 @@
         <div id="signature-modal" class="modal-overlay" style="z-index: 2000; align-items: center; justify-content: center;">
             <div class="modal-box" style="max-width: 500px; height: auto;">
                 <div class="modal-header">
-                    <h2 style="font-size: 1.1rem;"><i class="ph-fill ph-pen-nib"></i> Buat Tanda Tangan</h2>
+                    <h2 style="font-size: 1.1rem;"><i class="ph-light ph-pen-nib"></i> Buat Tanda Tangan</h2>
                     <button class="modal-close" id="close-sig-modal">&times;</button>
                 </div>
                 <div class="modal-body" style="background: #f1f5f9; padding: 20px; display: flex; justify-content: center;">
@@ -689,7 +751,7 @@
                 <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 20px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <div style="background: var(--color-blue-light); color: var(--primary-blue); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                            <i class="ph-fill ph-eye"></i>
+                            <i class="ph-light ph-eye"></i>
                         </div>
                         <div>
                             <h2 id="previewModalTitle" style="font-size: 1.1rem; margin: 0;">Pratinjau Dokumen</h2>
@@ -716,7 +778,7 @@
     <template id="tpl-resize-image">
         <div class="pdf-tool-container" style="width: 100%; max-width: 1440px; margin: 0 auto; padding: 20px;">
             <div id="resize-img-upload-area" class="upload-area" style="cursor: pointer;">
-                <i class="ph-fill ph-frame-corners" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
+                <i class="ph-light ph-frame-corners" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
                 <div class="upload-text">
                     <h3>Resize Gambar</h3>
                     <p>Ubah lebar dan tinggi gambar Anda dengan presisi</p>
@@ -733,7 +795,7 @@
                     <!-- Settings Card -->
                     <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
                         <h4 style="margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
-                            <i class="ph-fill ph-sliders-horizontal" style="color: #2563eb;"></i> Resize Settings
+                            <i class="ph-light ph-sliders-horizontal" style="color: #2563eb;"></i> Resize Settings
                         </h4>
 
                         <div style="display: grid; gap: 24px;">
@@ -764,14 +826,14 @@
                                 </div>
                             </div>
 
-                            <button id="btn-resize-img-save" class="btn btn-primary" style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);"><i class="ph-bold ph-download-simple"></i> Download Results</button>
+                            <button id="btn-resize-img-save" class="btn btn-primary" style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);"><i class="ph-light ph-download-simple"></i> Download Results</button>
                         </div>
                     </div>
 
                     <!-- Bulk Operations Card -->
                     <div style="background: #1e293b; border-radius: 24px; padding: 24px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                         <h4 style="margin: 0 0 15px 0; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                            <i class="ph-fill ph-package" style="color: #60a5fa;"></i> Bulk Operations
+                            <i class="ph-light ph-package" style="color: #60a5fa;"></i> Bulk Operations
                         </h4>
                         <div style="display: grid; gap: 15px;">
                             <div>
@@ -836,7 +898,7 @@
     <template id="tpl-convert-image">
         <div class="pdf-tool-container" style="width: 100%; max-width: 1440px; margin: 0 auto; padding: 20px;">
             <div id="conv-img-upload-area" class="upload-area" style="cursor: pointer;">
-                <i class="ph-fill ph-arrows-counter-clockwise" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
+                <i class="ph-light ph-arrows-counter-clockwise" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
                 <div class="upload-text">
                     <h3>Konversi Format Gambar</h3>
                     <p>Ubah file JPG, PNG, atau WebP Anda secara massal</p>
@@ -852,7 +914,7 @@
                 <div style="display: flex; flex-direction: column; gap: 24px;">
                     <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
                         <h4 style="margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
-                            <i class="ph-fill ph-gear" style="color: #2563eb;"></i> Conversion Settings
+                            <i class="ph-light ph-gear" style="color: #2563eb;"></i> Conversion Settings
                         </h4>
 
                         <div style="display: grid; gap: 24px;">
@@ -874,7 +936,7 @@
                                 <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; font-weight: 600;">Geser untuk mengatur tingkat kompresi hasil konversi.</p>
                             </div>
 
-                            <button id="btn-conv-img-save" class="btn btn-primary" style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);"><i class="ph-bold ph-check-circle"></i> Convert & Download</button>
+                            <button id="btn-conv-img-save" class="btn btn-primary" style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);"><i class="ph-light ph-check-circle"></i> Convert & Download</button>
                         </div>
                     </div>
 
@@ -907,7 +969,7 @@
     <template id="tpl-pdf-to-text">
         <div class="pdf-tool-container" style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 20px;">
             <div id="pdf-to-text-upload-area" class="upload-area" style="cursor: pointer;">
-                <i class="ph-fill ph-file-text" style="font-size: 80px; color: #2563eb; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.15));"></i>
+                <i class="ph-light ph-file-text" style="font-size: 80px; color: #2563eb; margin-bottom: 20px; filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.15));"></i>
                 <div class="upload-text">
                     <h3>PDF ke Teks (Ekstraksi)</h3>
                     <p>Ambil teks murni dari dokumen PDF Anda secara instan dan lokal</p>
@@ -922,21 +984,21 @@
                     <!-- Stats Cards -->
                     <div style="flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                         <div style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                            <div style="background: #eff6ff; color: #2563eb; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;"><i class="ph-bold ph-text-aa"></i></div>
+                            <div style="background: #eff6ff; color: #2563eb; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;"><i class="ph-light ph-text-aa"></i></div>
                             <div>
                                 <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Kata</div>
                                 <div id="p2t-stat-words" style="font-size: 1.1rem; font-weight: 800; color: #1e293b;">0</div>
                             </div>
                         </div>
                         <div style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                            <div style="background: #f0fdf4; color: #10b981; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;"><i class="ph-bold ph-text-t"></i></div>
+                            <div style="background: #f0fdf4; color: #10b981; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;"><i class="ph-light ph-text-t"></i></div>
                             <div>
                                 <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Karakter</div>
                                 <div id="p2t-stat-chars" style="font-size: 1.1rem; font-weight: 800; color: #1e293b;">0</div>
                             </div>
                         </div>
                         <div style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px;">
-                            <div style="background: #fff7ed; color: #f59e0b; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;"><i class="ph-bold ph-timer"></i></div>
+                            <div style="background: #fff7ed; color: #f59e0b; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;"><i class="ph-light ph-timer"></i></div>
                             <div>
                                 <div style="font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Baca</div>
                                 <div id="p2t-stat-time" style="font-size: 1.1rem; font-weight: 800; color: #1e293b;">0 Menit</div>
@@ -949,7 +1011,7 @@
                         <button class="btn btn-outline" id="btn-p2t-change" style="height: 100%; border-radius: 16px;"><i class="ph ph-arrows-clockwise"></i> Ganti</button>
                         <button class="btn btn-outline" id="btn-p2t-clean" style="height: 100%; border-radius: 16px;" title="Bersihkan spasi & baris kosong"><i class="ph ph-magic-wand"></i> Rapikan</button>
                         <button class="btn btn-primary" id="btn-p2t-ocr" style="height: 100%; border-radius: 16px; background: var(--primary-gradient); color: white; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2); border: none; font-weight: 700;" title="Gunakan AI untuk scan teks dari gambar/foto">
-                            <i class="ph-fill ph-eye"></i> Scan OCR (AI)
+                            <i class="ph-light ph-eye"></i> Scan OCR (AI)
                         </button>
                     </div>
                 </div>
@@ -978,9 +1040,9 @@
                                 </div>
                             </div>
                             <div style="display: flex; gap: 8px;">
-                                <button id="btn-p2t-copy" style="background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="ph-bold ph-copy"></i> Salin</button>
+                                <button id="btn-p2t-copy" style="background: white; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="ph-light ph-copy"></i> Salin</button>
                                 <div style="position: relative;">
-                                    <button id="btn-p2t-download-main" style="background: #2563eb; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="ph-bold ph-download-simple"></i> Unduh <i class="ph ph-caret-down"></i></button>
+                                    <button id="btn-p2t-download-main" style="background: #2563eb; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; gap: 6px;"><i class="ph-light ph-download-simple"></i> Unduh <i class="ph ph-caret-down"></i></button>
                                     <div id="p2t-export-menu" style="display: none; position: absolute; top: calc(100% + 5px); right: 0; background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 150px; z-index: 100; overflow: hidden;">
                                         <div class="export-opt" data-ext="txt" style="padding: 10px 16px; font-size: 0.8rem; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid #f1f5f9;">Teks Biasa (.txt)</div>
                                         <div class="export-opt" data-ext="doc" style="padding: 10px 16px; font-size: 0.8rem; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid #f1f5f9;">Microsoft Word (.doc)</div>
@@ -1656,6 +1718,15 @@
     <script src="js/tools/compress-image.js?v=4"></script>
     <script src="js/tools/pdf-editor.js?v=4"></script>
     <script src="js/main.js?v=4"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('SW Registered', reg))
+                    .catch(err => console.log('SW Failed', err));
+            });
+        }
+    </script>
 </body>
 
 
