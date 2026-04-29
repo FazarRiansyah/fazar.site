@@ -1,15 +1,10 @@
 /**
- * Super Editor PDF Logic - Advanced Version
- * Handles multi-file merging, batch page selection, and content insertion (Watermark/Page Numbers).
+ * Super Editor PDF Logic - Multi-Tab Professional Version
  */
 
 let editorState = {
-    pdfLibDoc: null,
-    pdfJsDoc: null,
-    currentPage: 1,
-    zoom: 1.0,
-    pages: [], // Array of page objects { id, originalIndex, rotation, isSelected, docIndex }
-    docs: [], // Array of loaded pdfLibDocs
+    docs: [], // Array of { name, pdfLibDoc, pdfJsDoc, pages, currentPage, zoom }
+    activeDocIndex: -1,
     container: null
 };
 
@@ -18,31 +13,115 @@ async function initPdfEditor(container) {
     const fileInput = container.querySelector('#edit-pdf-input');
     const uploadArea = container.querySelector('#edit-upload-area');
     
-    // Tab Switching
     setupRibbonTabs(container);
+    setupEditorButtons(container);
 
-    // Initial Upload Logic
+    // Initial Upload
     if (uploadArea && fileInput) {
         uploadArea.onclick = () => fileInput.click();
         fileInput.onchange = async (e) => {
             const file = e.target.files[0];
             if (file && file.type === 'application/pdf') {
-                await loadPdfToEditor(file);
+                await openNewDocument(file);
             }
         };
     }
 
-    // Connect Buttons
-    setupEditorButtons(container);
+    // New Tab Button
+    container.querySelector('#btn-editor-new-tab')?.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/pdf';
+        input.onchange = (e) => openNewDocument(e.target.files[0]);
+        input.click();
+    });
+}
+
+async function openNewDocument(file) {
+    if (!file) return;
     
-    // Setup Additional File Input (for Merge/Add File)
-    const addFileInput = document.createElement('input');
-    addFileInput.type = 'file';
-    addFileInput.accept = 'application/pdf';
-    addFileInput.id = 'editor-add-file-input';
-    addFileInput.style.display = 'none';
-    addFileInput.onchange = (e) => handleAddFile(e.target.files[0]);
-    document.body.appendChild(addFileInput);
+    const container = editorState.container;
+    const uploadView = container.querySelector('#pdf-upload-view');
+    const editorView = container.querySelector('#pdf-editor-view');
+
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfLibDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+        const pdfJsDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        
+        const pageCount = pdfLibDoc.getPageCount();
+        const pages = [];
+        for (let i = 0; i < pageCount; i++) {
+            pages.push({ id: Math.random().toString(36).substr(2, 9), index: i, isSelected: false });
+        }
+
+        const newDoc = {
+            name: file.name,
+            pdfLibDoc,
+            pdfJsDoc,
+            pages,
+            currentPage: 1,
+            zoom: 1.0
+        };
+
+        editorState.docs.push(newDoc);
+        editorState.activeDocIndex = editorState.docs.length - 1;
+
+        if (uploadView) uploadView.style.display = 'none';
+        if (editorView) editorView.style.display = 'flex';
+
+        await refreshUI();
+
+    } catch (err) {
+        console.error("Open doc failed:", err);
+        alert("Gagal membuka dokumen.");
+    }
+}
+
+async function switchTab(index) {
+    editorState.activeDocIndex = index;
+    await refreshUI();
+}
+
+async function closeTab(index, e) {
+    if (e) e.stopPropagation();
+    
+    editorState.docs.splice(index, 1);
+    
+    if (editorState.docs.length === 0) {
+        editorState.activeDocIndex = -1;
+        editorState.container.querySelector('#pdf-editor-view').style.display = 'none';
+        editorState.container.querySelector('#pdf-upload-view').style.display = 'flex';
+    } else {
+        editorState.activeDocIndex = Math.max(0, index - 1);
+        await refreshUI();
+    }
+}
+
+async function refreshUI() {
+    renderTabs();
+    await renderThumbnails();
+    await renderActivePage();
+    updateStatusBar();
+}
+
+function renderTabs() {
+    const container = editorState.container.querySelector('#editor-tabs-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    editorState.docs.forEach((doc, index) => {
+        const tab = document.createElement('div');
+        tab.className = `editor-tab ${index === editorState.activeDocIndex ? 'active' : ''}`;
+        tab.onclick = () => switchTab(index);
+        
+        tab.innerHTML = `
+            <i class="ph-fill ph-file-pdf"></i>
+            <span title="${doc.name}">${doc.name}</span>
+            <div class="tab-close" onclick="closeTab(${index}, event)"><i class="ph ph-x"></i></div>
+        `;
+        container.appendChild(tab);
+    });
 }
 
 function setupRibbonTabs(container) {
@@ -70,10 +149,17 @@ function setupRibbonTabs(container) {
 
 function setupEditorButtons(container) {
     // Organisir
-    container.querySelector('#btn-editor-merge')?.addEventListener('click', () => document.getElementById('editor-add-file-input').click());
-    container.querySelector('#btn-editor-rotate-cw')?.addEventListener('click', () => rotateActivePage(90));
-    container.querySelector('#btn-editor-delete')?.addEventListener('click', () => deleteSelectedPages());
-    container.querySelector('#btn-editor-split')?.addEventListener('click', () => extractSelectedPages());
+    container.querySelector('#btn-editor-merge')?.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/pdf';
+        input.onchange = (e) => openNewDocument(e.target.files[0]);
+        input.click();
+    });
+
+    container.querySelector('#btn-editor-rotate-cw')?.addEventListener('click', () => rotatePage(90));
+    container.querySelector('#btn-editor-delete')?.addEventListener('click', () => deletePages());
+    container.querySelector('#btn-editor-split')?.addEventListener('click', () => extractPages());
     
     // Sisipkan
     container.querySelector('#btn-editor-page-nums')?.addEventListener('click', () => addPageNumbers());
@@ -81,125 +167,35 @@ function setupEditorButtons(container) {
 
     // Zoom
     container.querySelector('#btn-editor-zoom-in')?.addEventListener('click', () => {
-        editorState.zoom += 0.1;
+        const doc = editorState.docs[editorState.activeDocIndex];
+        doc.zoom += 0.1;
         renderActivePage();
     });
     container.querySelector('#btn-editor-zoom-out')?.addEventListener('click', () => {
-        editorState.zoom = Math.max(0.5, editorState.zoom - 0.1);
+        const doc = editorState.docs[editorState.activeDocIndex];
+        doc.zoom = Math.max(0.5, doc.zoom - 0.1);
         renderActivePage();
     });
 
     // Export
-    container.querySelector('#btn-editor-export')?.addEventListener('click', () => exportEditedPdf());
-}
-
-async function loadPdfToEditor(file) {
-    const container = editorState.container;
-    const uploadView = container.querySelector('#pdf-upload-view');
-    const editorView = container.querySelector('#pdf-editor-view');
-    const fileNameStatus = container.querySelector('#editor-filename-status');
-
-    try {
-        const arrayBuffer = await file.arrayBuffer();
-        
-        // Load for manipulation
-        const doc = await PDFLib.PDFDocument.load(arrayBuffer);
-        editorState.docs = [doc];
-        
-        // Initialize Page State
-        const count = doc.getPageCount();
-        editorState.pages = [];
-        for (let i = 0; i < count; i++) {
-            editorState.pages.push({ 
-                id: Math.random().toString(36).substr(2, 9), 
-                docIndex: 0, 
-                index: i,
-                isSelected: false 
-            });
-        }
-
-        // Update UI
-        if (uploadView) uploadView.style.display = 'none';
-        if (editorView) editorView.style.display = 'flex';
-        if (fileNameStatus) fileNameStatus.textContent = file.name;
-
-        editorState.currentPage = 1;
-        await syncAndRefresh();
-
-    } catch (err) {
-        console.error("Failed to load PDF:", err);
-        alert("Gagal memuat file PDF.");
-    }
-}
-
-async function handleAddFile(file) {
-    if (!file || !editorState.docs.length) return;
-    
-    try {
-        const arrayBuffer = await file.arrayBuffer();
-        const newDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-        const docIndex = editorState.docs.length;
-        editorState.docs.push(newDoc);
-        
-        const count = newDoc.getPageCount();
-        for (let i = 0; i < count; i++) {
-            editorState.pages.push({ 
-                id: Math.random().toString(36).substr(2, 9), 
-                docIndex: docIndex, 
-                index: i,
-                isSelected: false 
-            });
-        }
-        
-        await syncAndRefresh();
-        alert(`${file.name} berhasil ditambahkan!`);
-        
-    } catch (err) {
-        console.error("Add file failed:", err);
-        alert("Gagal menambahkan file.");
-    }
-}
-
-async function syncAndRefresh() {
-    // Generate combined PDF for pdf.js to render
-    const combinedDoc = await PDFLib.PDFDocument.create();
-    for (const p of editorState.pages) {
-        const [copiedPage] = await combinedDoc.copyPages(editorState.docs[p.docIndex], [p.index]);
-        combinedDoc.addPage(copiedPage);
-    }
-    
-    const bytes = await combinedDoc.save();
-    editorState.pdfJsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
-    
-    await refreshEditorUI();
-}
-
-async function refreshEditorUI() {
-    await renderThumbnails();
-    await renderActivePage();
-    updateStatusBar();
+    container.querySelector('#btn-editor-export')?.addEventListener('click', () => exportPdf());
 }
 
 async function renderThumbnails() {
     const list = editorState.container.querySelector('#editor-thumbnail-list');
-    if (!list) return;
+    const doc = editorState.docs[editorState.activeDocIndex];
+    if (!list || !doc) return;
     list.innerHTML = '';
 
-    for (let i = 0; i < editorState.pages.length; i++) {
+    for (let i = 0; i < doc.pages.length; i++) {
         const pageNum = i + 1;
-        const pageData = editorState.pages[i];
+        const pageData = doc.pages[i];
         
         const item = document.createElement('div');
-        item.className = `thumbnail-item ${pageNum === editorState.currentPage ? 'active' : ''} ${pageData.isSelected ? 'selected' : ''}`;
+        item.className = `thumbnail-item ${pageNum === doc.currentPage ? 'active' : ''} ${pageData.isSelected ? 'selected' : ''}`;
         
-        // Thumbnail Selection Checkbox Area
         const selectBadge = document.createElement('div');
-        selectBadge.className = 'select-badge';
-        selectBadge.style.cssText = `
-            position: absolute; top: 5px; right: 5px; width: 20px; height: 20px;
-            border-radius: 50%; border: 2px solid #fff; background: ${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.2)'};
-            z-index: 5; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;
-        `;
+        selectBadge.style.cssText = `position:absolute; top:5px; right:5px; width:20px; height:20px; border-radius:50%; border:2px solid #fff; background:${pageData.isSelected ? 'var(--primary-blue)' : 'rgba(0,0,0,0.2)'}; z-index:5; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;`;
         if (pageData.isSelected) selectBadge.innerHTML = '<i class="ph-bold ph-check"></i>';
         
         selectBadge.onclick = (e) => {
@@ -209,7 +205,7 @@ async function renderThumbnails() {
         };
 
         item.onclick = () => {
-            editorState.currentPage = pageNum;
+            doc.currentPage = pageNum;
             updateActiveThumbnail();
             renderActivePage();
             updateStatusBar();
@@ -217,12 +213,9 @@ async function renderThumbnails() {
 
         const canvas = document.createElement('canvas');
         canvas.className = 'thumbnail-canvas';
-        
-        // Render from combined pdfJsDoc
-        const page = await editorState.pdfJsDoc.getPage(pageNum);
+        const page = await doc.pdfJsDoc.getPage(pageNum);
         const viewport = page.getViewport({ scale: 0.2 });
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        canvas.width = viewport.width; canvas.height = viewport.height;
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
         item.appendChild(selectBadge);
@@ -233,160 +226,125 @@ async function renderThumbnails() {
 }
 
 function updateActiveThumbnail() {
+    const doc = editorState.docs[editorState.activeDocIndex];
     const items = editorState.container.querySelectorAll('.thumbnail-item');
     items.forEach((item, idx) => {
-        if (idx + 1 === editorState.currentPage) item.classList.add('active');
+        if (idx + 1 === doc.currentPage) item.classList.add('active');
         else item.classList.remove('active');
     });
 }
 
 async function renderActivePage() {
+    const doc = editorState.docs[editorState.activeDocIndex];
     const canvas = editorState.container.querySelector('#editor-main-canvas');
-    if (!canvas || !editorState.pdfJsDoc) return;
+    if (!canvas || !doc) return;
 
-    const page = await editorState.pdfJsDoc.getPage(editorState.currentPage);
-    const viewport = page.getViewport({ scale: editorState.zoom });
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    const renderCtx = canvas.getContext('2d');
-    await page.render({ canvasContext: renderCtx, viewport }).promise;
+    const page = await doc.pdfJsDoc.getPage(doc.currentPage);
+    const viewport = page.getViewport({ scale: doc.zoom });
+    canvas.width = viewport.width; canvas.height = viewport.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
     
     const zoomText = editorState.container.querySelector('#editor-zoom-level');
-    if (zoomText) zoomText.textContent = `${Math.round(editorState.zoom * 100)}%`;
+    if (zoomText) zoomText.textContent = `${Math.round(doc.zoom * 100)}%`;
+    
+    const fileNameStatus = editorState.container.querySelector('#editor-filename-status');
+    if (fileNameStatus) fileNameStatus.textContent = doc.name;
 }
 
 function updateStatusBar() {
+    const doc = editorState.docs[editorState.activeDocIndex];
     const status = editorState.container.querySelector('#editor-page-status');
-    if (status) status.textContent = `Halaman ${editorState.currentPage} / ${editorState.pages.length}`;
+    if (status && doc) status.textContent = `Halaman ${doc.currentPage} / ${doc.pages.length}`;
 }
 
-async function rotateActivePage(degrees) {
-    const pageData = editorState.pages[editorState.currentPage - 1];
-    const page = editorState.docs[pageData.docIndex].getPage(pageData.index);
-    const currentRotation = page.getRotation().angle;
-    page.setRotation(PDFLib.degrees(currentRotation + degrees));
+async function rotatePage(degrees) {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const pageData = doc.pages[doc.currentPage - 1];
+    const page = doc.pdfLibDoc.getPage(pageData.index);
+    page.setRotation(PDFLib.degrees(page.getRotation().angle + degrees));
+    await syncDoc(doc);
+}
+
+async function deletePages() {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const selected = doc.pages.filter(p => p.isSelected);
     
-    await syncAndRefresh();
-}
-
-async function deleteSelectedPages() {
-    const selected = editorState.pages.filter(p => p.isSelected);
-    if (!selected.length) {
-        const confirmDelete = confirm(`Hapus halaman ${editorState.currentPage}?`);
-        if (confirmDelete) {
-            editorState.pages.splice(editorState.currentPage - 1, 1);
-            if (editorState.currentPage > editorState.pages.length) editorState.currentPage = editorState.pages.length;
-            await syncAndRefresh();
+    if (selected.length === 0) {
+        if (confirm(`Hapus halaman ${doc.currentPage}?`)) {
+            doc.pages.splice(doc.currentPage - 1, 1);
+            doc.currentPage = Math.max(1, doc.currentPage - 1);
+            await syncDoc(doc);
         }
-        return;
-    }
-
-    if (confirm(`Hapus ${selected.length} halaman terpilih?`)) {
-        editorState.pages = editorState.pages.filter(p => !p.isSelected);
-        editorState.currentPage = 1;
-        await syncAndRefresh();
+    } else {
+        if (confirm(`Hapus ${selected.length} halaman terpilih?`)) {
+            doc.pages = doc.pages.filter(p => !p.isSelected);
+            doc.currentPage = 1;
+            await syncDoc(doc);
+        }
     }
 }
 
-async function extractSelectedPages() {
-    const selected = editorState.pages.filter(p => p.isSelected);
-    if (!selected.length) {
-        alert("Pilih halaman di sidebar (klik lingkaran kecil) untuk diekstrak.");
-        return;
-    }
+async function extractPages() {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const selected = doc.pages.filter(p => p.isSelected);
+    if (!selected.length) { alert("Pilih halaman dulu!"); return; }
 
     try {
         const newDoc = await PDFLib.PDFDocument.create();
-        for (const p of selected) {
-            const [copiedPage] = await newDoc.copyPages(editorState.docs[p.docIndex], [p.index]);
-            newDoc.addPage(copiedPage);
-        }
-        const bytes = await newDoc.save();
-        downloadBlob(bytes, `Extracted_Pages_${new Date().getTime()}.pdf`);
-    } catch (err) {
-        alert("Gagal mengekstrak halaman.");
-    }
+        const indices = selected.map(p => p.index);
+        const copiedPages = await newDoc.copyPages(doc.pdfLibDoc, indices);
+        copiedPages.forEach(p => newDoc.addPage(p));
+        downloadBlob(await newDoc.save(), `Extracted_${doc.name}`);
+    } catch (err) { alert("Gagal!"); }
 }
 
 async function addPageNumbers() {
-    if (!editorState.docs.length) return;
-    
-    const confirmNum = confirm("Tambahkan nomor halaman di bagian bawah setiap halaman?");
-    if (!confirmNum) return;
-
-    try {
-        for (let i = 0; i < editorState.pages.length; i++) {
-            const p = editorState.pages[i];
-            const page = editorState.docs[p.docIndex].getPage(p.index);
-            const { width, height } = page.getSize();
-            const text = `Halaman ${i + 1} dari ${editorState.pages.length}`;
-            
-            page.drawText(text, {
-                x: width / 2 - 40,
-                y: 20,
-                size: 10,
-                color: PDFLib.rgb(0.5, 0.5, 0.5)
-            });
-        }
-        await syncAndRefresh();
-        alert("Nomor halaman berhasil ditambahkan!");
-    } catch (err) {
-        alert("Gagal menambahkan nomor halaman.");
+    const doc = editorState.docs[editorState.activeDocIndex];
+    for (let i = 0; i < doc.pages.length; i++) {
+        const page = doc.pdfLibDoc.getPage(doc.pages[i].index);
+        page.drawText(`Hal ${i + 1}`, { x: page.getSize().width/2 - 20, y: 20, size: 10 });
     }
+    await syncDoc(doc);
 }
 
 async function addWatermark() {
-    const text = prompt("Masukkan teks untuk Watermark (Contoh: RAHASIA, DRAFT, MILIK NEGARA):", "RAHASIA");
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const text = prompt("Teks Watermark:", "RAHASIA");
     if (!text) return;
-
-    try {
-        for (let i = 0; i < editorState.pages.length; i++) {
-            const p = editorState.pages[i];
-            const page = editorState.docs[p.docIndex].getPage(p.index);
-            const { width, height } = page.getSize();
-            
-            page.drawText(text, {
-                x: width / 4,
-                y: height / 2,
-                size: 50,
-                rotate: PDFLib.degrees(45),
-                opacity: 0.2,
-                color: PDFLib.rgb(0.7, 0, 0)
-            });
-        }
-        await syncAndRefresh();
-        alert("Watermark berhasil ditambahkan!");
-    } catch (err) {
-        alert("Gagal menambahkan watermark.");
+    for (let i = 0; i < doc.pages.length; i++) {
+        const page = doc.pdfLibDoc.getPage(doc.pages[i].index);
+        page.drawText(text, { x: 100, y: 400, size: 50, rotate: PDFLib.degrees(45), opacity: 0.2 });
     }
+    await syncDoc(doc);
 }
 
-async function exportEditedPdf() {
-    if (!editorState.pages.length) return;
-    const btn = editorState.container.querySelector('#btn-editor-export');
-    btn.disabled = true;
-
-    try {
-        const finalDoc = await PDFLib.PDFDocument.create();
-        for (const p of editorState.pages) {
-            const [copiedPage] = await finalDoc.copyPages(editorState.docs[p.docIndex], [p.index]);
-            finalDoc.addPage(copiedPage);
-        }
-        const bytes = await finalDoc.save();
-        downloadBlob(bytes, `JagaDokumen_Pro_${new Date().getTime()}.pdf`);
-    } catch (err) {
-        alert("Gagal menyimpan PDF.");
-    } finally {
-        btn.disabled = false;
+async function syncDoc(doc) {
+    // We recreate pdfJsDoc from current pdfLibDoc state for rendering
+    // This is simplified: in reality we'd create a temporary doc based on `doc.pages`
+    const tempDoc = await PDFLib.PDFDocument.create();
+    for (const p of doc.pages) {
+        const [copied] = await tempDoc.copyPages(doc.pdfLibDoc, [p.index]);
+        tempDoc.addPage(copied);
     }
+    const bytes = await tempDoc.save();
+    doc.pdfJsDoc = await pdfjsLib.getDocument({ data: bytes }).promise;
+    await refreshUI();
+}
+
+async function exportPdf() {
+    const doc = editorState.docs[editorState.activeDocIndex];
+    const finalDoc = await PDFLib.PDFDocument.create();
+    for (const p of doc.pages) {
+        const [copied] = await finalDoc.copyPages(doc.pdfLibDoc, [p.index]);
+        finalDoc.addPage(copied);
+    }
+    downloadBlob(await finalDoc.save(), `Edited_${doc.name}`);
 }
 
 function downloadBlob(bytes, filename) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = filename;
     a.click();
 }

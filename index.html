@@ -567,7 +567,15 @@
                     </div>
                 </div>
 
-                <!-- 2. Main Workspace (Sidebar + Viewer) -->
+                <!-- 2. Document Tabs Bar (New) -->
+                <div class="editor-tabs-bar" style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 10px; flex-shrink: 0; overflow-x: auto;">
+                    <div id="editor-tabs-container" style="display: flex; gap: 2px;">
+                        <!-- Tabs will be injected here -->
+                    </div>
+                    <button id="btn-editor-new-tab" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 8px; font-size: 1.2rem; display: flex; align-items: center;"><i class="ph ph-plus"></i></button>
+                </div>
+
+                <!-- 3. Main Workspace (Sidebar + Viewer) -->
                 <div class="editor-main" style="display: flex; flex: 1; overflow: hidden;">
                     <!-- Left Sidebar -->
                     <aside class="editor-sidebar-left" style="width: 250px; background: var(--bg-card); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0;">

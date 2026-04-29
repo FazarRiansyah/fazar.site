@@ -1,0 +1,61 @@
+
+/* Document Tabs Styles */
+.editor-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    max-width: 200px;
+    min-width: 120px;
+    transition: all 0.2s;
+    position: relative;
+    margin-top: 5px;
+}
+
+.editor-tab i {
+    font-size: 1rem;
+    color: var(--primary-blue);
+}
+
+.editor-tab span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editor-tab:hover {
+    background: var(--bg-card);
+    color: var(--text-main);
+}
+
+.editor-tab.active {
+    background: var(--bg-card);
+    color: var(--text-main);
+    border-top: 2px solid var(--primary-blue);
+}
+
+.tab-close {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.tab-close:hover {
+    background: var(--color-red-light);
+    color: var(--color-red);
+}
