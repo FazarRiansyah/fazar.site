@@ -501,7 +501,7 @@
             </div>
 
             <!-- Editor Workspace (Full Screen / Sticky UI) -->
-            <div id="pdf-editor-view" class="editor-workspace" style="display: none; flex-direction: column; height: calc(100vh - 120px); overflow: hidden; background: var(--bg-main);">
+            <div id="pdf-editor-view" class="editor-workspace" style="display: none; flex-direction: column; height: calc(100vh - 85px); overflow: hidden; background: var(--bg-main);">
                 <!-- 1. Top Ribbon Toolbar -->
                 <div class="editor-ribbon" style="background: var(--bg-card); border-bottom: 1px solid var(--border-color); flex-shrink: 0;">
                     <div class="ribbon-tabs" style="padding: 0 20px; display: flex; gap: 4px; border-bottom: 1px solid var(--border-color);">
@@ -510,7 +510,7 @@
                         <div class="ribbon-tab" data-tab="tab-edit" style="padding: 12px 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-pencil-line"></i> Edit</div>
                         <div class="ribbon-tab" data-tab="tab-secure" style="padding: 12px 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; color: var(--text-muted);"><i class="ph ph-shield-check"></i> Keamanan</div>
                     </div>
-                               <div class="ribbon-content" style="padding: 15px 25px; display: flex; align-items: center; justify-content: space-between;">
+                               <div class="ribbon-content" style="padding: 10px 25px; display: flex; align-items: center; justify-content: space-between;">
                         <!-- Panel: Organisir -->
                         <div class="ribbon-panel active" id="tab-organize" style="display: flex; gap: 30px;">
                             <div class="ribbon-group" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
@@ -589,7 +589,7 @@
                     </aside>
 
                     <!-- Center Viewer -->
-                    <section class="editor-viewer" style="flex: 1; background: #333; position: relative; overflow: auto; display: flex; justify-content: center; padding: 40px;">
+                    <section class="editor-viewer" style="flex: 1; background: #1a1a1a; position: relative; overflow: auto; display: flex; justify-content: center; padding: 20px;">
                         <div id="editor-canvas-wrapper" style="position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5); background: white;">
                              <canvas id="editor-main-canvas"></canvas>
                         </div>
@@ -597,7 +597,7 @@
                 </div>
 
                 <!-- 3. Bottom Status Bar -->
-                <div class="editor-status-bar" style="height: 32px; background: var(--bg-header); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0;">
+                <div class="editor-status-bar" style="height: 26px; background: var(--bg-header); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0;">
                     <div style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted);" id="editor-filename-status">Document.pdf</div>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
