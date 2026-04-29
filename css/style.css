@@ -2809,13 +2809,11 @@ canvas, .canvas-container {
     background: var(--color-green-light);
     padding: 6px 14px;
     font-size: 0.8rem;
-}
     border-radius: var(--border-radius-full);
-    font-size: 0.8rem;
     color: var(--color-green);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-weight: 700;
 }
 
