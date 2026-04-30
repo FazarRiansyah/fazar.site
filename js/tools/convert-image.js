@@ -126,23 +126,26 @@ function initConvertImg(container = document) {
             const isActive = item.id === activeImageId;
             const el = document.createElement('div');
             el.style.cssText = `
-                display: flex; align-items: center; gap: 12px; padding: 12px; 
-                background: ${isActive ? 'rgba(37, 99, 235, 0.1)' : 'var(--bg-card)'}; 
+                display: flex; align-items: center; gap: 12px; padding: 10px; 
+                background: ${isActive ? 'var(--bg-main)' : 'var(--bg-card)'}; 
                 border: 1.5px solid ${isActive ? 'var(--primary-blue)' : 'var(--border-color)'}; 
-                border-radius: 16px; cursor: pointer; transition: 0.2s;
+                border-radius: 14px; cursor: pointer; transition: all 0.2s;
                 color: var(--text-main);
-                box-shadow: ${isActive ? '0 8px 20px rgba(0,0,0,0.3)' : 'none'};
+                box-shadow: ${isActive ? 'var(--shadow-sm)' : 'none'};
+                position: relative;
             `;
             el.innerHTML = `
-                <div style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden; flex-shrink: 0; background: var(--bg-main); border: 1px solid var(--border-color);">
+                <div style="width: 36px; height: 36px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: var(--bg-main); border: 1px solid var(--border-color);">
                     <img src="${item.dataUrl}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div style="flex: 1; min-width: 0;">
-                    <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.file.name}</div>
-                    <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700;">${item.type} • ${item.size}</div>
+                    <div style="font-size: 0.7rem; font-weight: 800; color: ${isActive ? 'var(--primary-blue)' : 'var(--text-main)'}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.file.name}</div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700;">${item.type} • ${item.size}</div>
                 </div>
-                <button class="btn-remove" style="width: 28px; height: 28px; border-radius: 8px; border: none; background: ${isActive ? 'rgba(255,255,255,0.1)' : 'rgba(244, 63, 94, 0.1)'}; color: #f43f5e; cursor: pointer;"><i class="ph ph-trash"></i></button>
+                <button class="btn-remove" style="width: 24px; height: 24px; border-radius: 6px; border: none; background: var(--color-red-light); color: var(--color-red); cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: ${isActive ? 1 : 0.5}; transition: 0.2s;"><i class="ph ph-trash" style="font-size: 0.75rem;"></i></button>
             `;
+            el.onmouseenter = () => { if (!isActive) el.style.borderColor = 'var(--text-muted)'; };
+            el.onmouseleave = () => { if (!isActive) el.style.borderColor = 'var(--border-color)'; };
             el.onclick = (e) => {
                 if (e.target.closest('.btn-remove')) return;
                 activeImageId = item.id;
@@ -163,12 +166,14 @@ function initConvertImg(container = document) {
         
         const addBtn = document.createElement('div');
         addBtn.style.cssText = `
-            margin-top: 10px; padding: 14px; border: 2px dashed var(--border-color); border-radius: 16px; 
-            color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-align: center; cursor: pointer;
-            background: rgba(255,255,255,0.02);
+            margin-top: 5px; padding: 12px; border: 2px dashed var(--border-color); border-radius: 14px; 
+            color: var(--text-muted); font-size: 0.65rem; font-weight: 800; text-align: center; cursor: pointer; transition: 0.2s;
+            background: rgba(255,255,255,0.01); display: flex; align-items: center; justify-content: center; gap: 8px;
         `;
-        addBtn.innerHTML = `<i class="ph ph-plus-circle"></i> Add More Images`;
+        addBtn.innerHTML = `<i class="ph ph-plus-circle" style="font-size: 1rem;"></i> Tambah Gambar`;
         addBtn.onclick = triggerSelect;
+        addBtn.onmouseenter = () => { addBtn.style.borderColor = 'var(--primary-blue)'; addBtn.style.color = 'var(--primary-blue)'; };
+        addBtn.onmouseleave = () => { addBtn.style.borderColor = 'var(--border-color)'; addBtn.style.color = 'var(--text-muted)'; };
         grid.appendChild(addBtn);
     }
 

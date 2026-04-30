@@ -741,193 +741,212 @@
 
 
 
-    <!-- Template: Resize Gambar -->
+    <!-- Template: Resize Gambar (ULTIMATE OVERHAUL) -->
     <template id="tpl-resize-image">
-        <div class="pdf-tool-container" style="width: 100%; max-width: 1440px; margin: 0 auto; padding: 20px;">
-            <div id="resize-img-upload-area" class="upload-area" style="cursor: pointer;">
-                <i class="ph-light ph-frame-corners" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
-                <div class="upload-text">
-                    <h3>Resize Gambar</h3>
-                    <p>Ubah lebar dan tinggi gambar Anda dengan presisi</p>
+        <div class="pdf-tool-container" style="width: 100%; max-width: 1440px; margin: 0 auto; padding: 10px;">
+            <div id="resize-img-upload-area" class="upload-area" style="cursor: pointer; min-height: 350px;">
+                <div style="background: var(--color-blue-light); width: 100px; height: 100px; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                    <i class="ph-fill ph-frame-corners" style="font-size: 50px; color: var(--primary-blue);"></i>
                 </div>
-                <div class="btn btn-primary">Pilih File Gambar</div>
+                <div class="upload-text">
+                    <h3 style="font-size: 1.8rem; font-weight: 900; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Resize Gambar Pro</h3>
+                    <p style="color: var(--text-muted); font-weight: 500;">Ubah dimensi banyak gambar sekaligus dengan teknologi pemrosesan lokal</p>
+                </div>
+                <div class="btn btn-primary" style="padding: 14px 30px; border-radius: 14px;">Mulai Pilih Gambar</div>
             </div>
             <input type="file" id="resize-img-file-input" accept="image/*" multiple style="display: none;">
 
-            <!-- Modern Editor Layout -->
-            <div id="resize-img-workspace" style="display: none; width: 100%; grid-template-columns: 350px 1fr; gap: 40px; align-items: start;">
+            <!-- Cinematic Editor Layout -->
+            <div id="resize-img-workspace" style="display: none; width: 100%; grid-template-columns: 280px 1fr 320px; gap: 20px; align-items: stretch; min-height: 750px;">
                 
-                <!-- Left: Control Panel & List -->
-                <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Left: File Strip (Explorer) -->
+                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 28px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Antrean File</span>
+                        <button id="btn-resize-bulk-clear" style="background: var(--color-red-light); color: var(--color-red); border: none; padding: 5px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; cursor: pointer;"><i class="ph ph-trash"></i> Bersihkan</button>
+                    </div>
+                    <div id="resize-img-grid" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; scrollbar-width: thin;"></div>
+                </div>
+
+                <!-- Center: Cinematic Canvas -->
+                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); position: relative;">
+                    <div style="padding: 20px 30px; background: var(--glass-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--color-green);"></div>
+                            <span style="font-size: 0.85rem; font-weight: 800; color: var(--text-main);">Workspace Komparasi</span>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <div id="resize-pct-badge" style="background: var(--color-blue-light); color: var(--primary-blue); font-size: 0.7rem; font-weight: 900; padding: 4px 12px; border-radius: 8px; border: 1px solid var(--color-blue-light);">100%</div>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1; display: grid; grid-template-rows: 1fr 1fr; gap: 1px; background: var(--border-color);">
+                        <!-- Original Panel -->
+                        <div style="background: var(--bg-main); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 30px; position: relative;">
+                            <div style="position: absolute; top: 20px; left: 20px; font-size: 0.65rem; font-weight: 900; color: var(--text-muted); background: var(--bg-card); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); z-index: 5;">ASLI</div>
+                            <img id="resize-preview-orig" style="max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.1));">
+                            <div id="resize-label-orig" style="position: absolute; bottom: 20px; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); background: var(--bg-card); padding: 6px 14px; border-radius: 10px; border: 1px solid var(--border-color);">0 x 0</div>
+                        </div>
+
+                        <!-- Result Panel -->
+                        <div style="background: var(--bg-main); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 30px; position: relative;">
+                            <div style="position: absolute; top: 20px; left: 20px; font-size: 0.65rem; font-weight: 900; color: var(--primary-blue); background: var(--color-blue-light); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--color-blue-light); z-index: 5;">HASIL RESIZE</div>
+                            <img id="resize-preview-new" style="max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.1)); transition: all 0.3s ease;">
+                            <div id="resize-label-new" style="position: absolute; bottom: 20px; font-size: 0.75rem; font-weight: 800; color: var(--primary-blue); background: var(--bg-card); padding: 6px 14px; border-radius: 10px; border: 1px solid var(--primary-blue); box-shadow: 0 4px 15px rgba(37,99,235,0.1);">0 x 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Professional Inspector Panel -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
                     <!-- Settings Card -->
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-                        <h4 style="margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
-                            <i class="ph-light ph-sliders-horizontal" style="color: #2563eb;"></i> Resize Settings
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 28px; padding: 25px; box-shadow: var(--shadow-md);">
+                        <h4 style="margin: 0 0 20px 0; font-size: 1rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
+                            <i class="ph-bold ph-sliders-horizontal" style="color: var(--primary-blue);"></i> Pengaturan Dimensi
                         </h4>
 
-                        <div style="display: grid; gap: 24px;">
-                            <div>
-                                <label style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Manual Dimensions (PX)</label>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="display: grid; gap: 20px;">
+                            <div style="background: var(--bg-main); padding: 15px; border-radius: 18px; border: 1px solid var(--border-color);">
+                                <label style="display: block; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Ukuran Manual (PX)</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                     <div style="position: relative;">
-                                        <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-weight: 800; color: var(--text-muted);">W</span>
-                                        <input type="number" id="resize-width" style="width: 100%; padding: 14px 14px 14px 34px; border: 1.5px solid var(--border-color); border-radius: 14px; outline: none; font-weight: 700; font-size: 1rem; color: var(--text-main); background: var(--bg-main); transition: border-color 0.2s;">
+                                        <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.65rem; font-weight: 900; color: var(--text-muted);">L</span>
+                                        <input type="number" id="resize-width" style="width: 100%; padding: 12px 12px 12px 28px; border: 1.5px solid var(--border-color); border-radius: 12px; outline: none; font-weight: 800; font-size: 0.95rem; color: var(--text-main); background: var(--bg-card);">
                                     </div>
                                     <div style="position: relative;">
-                                        <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-weight: 800; color: var(--text-muted);">H</span>
-                                        <input type="number" id="resize-height" style="width: 100%; padding: 14px 14px 14px 34px; border: 1.5px solid var(--border-color); border-radius: 14px; outline: none; font-weight: 700; font-size: 1rem; color: var(--text-main); background: var(--bg-main); transition: border-color 0.2s;">
+                                        <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.65rem; font-weight: 900; color: var(--text-muted);">T</span>
+                                        <input type="number" id="resize-height" style="width: 100%; padding: 12px 12px 12px 28px; border: 1.5px solid var(--border-color); border-radius: 12px; outline: none; font-weight: 800; font-size: 0.95rem; color: var(--text-main); background: var(--bg-card);">
                                     </div>
                                 </div>
-                                <label style="display: flex; align-items: center; gap: 10px; margin-top: 16px; cursor: pointer; padding: 12px; background: var(--bg-main); border-radius: 12px; border: 1px solid var(--border-color);">
-                                    <input type="checkbox" id="resize-lock-ratio" checked style="width: 18px; height: 18px; accent-color: #2563eb;">
-                                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Lock Aspect Ratio</span>
+                                <label style="display: flex; align-items: center; gap: 10px; margin-top: 15px; cursor: pointer; padding: 10px; background: var(--bg-card); border-radius: 10px; border: 1px solid var(--border-color);">
+                                    <input type="checkbox" id="resize-lock-ratio" checked style="width: 18px; height: 18px; accent-color: var(--primary-blue);">
+                                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);">Kunci Rasio Aspek</span>
                                 </label>
                             </div>
 
                             <div>
-                                <label style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Quick Presets</label>
+                                <label style="display: block; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Presets Cepat</label>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                                    <button class="btn-resize-pct" data-pct="25" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); font-weight: 800; font-size: 0.85rem; color: var(--text-main); cursor: pointer; transition: all 0.2s;">25%</button>
-                                    <button class="btn-resize-pct" data-pct="50" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); font-weight: 800; font-size: 0.85rem; color: var(--text-main); cursor: pointer; transition: all 0.2s;">50%</button>
-                                    <button class="btn-resize-pct" data-pct="75" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); font-weight: 800; font-size: 0.85rem; color: var(--text-main); cursor: pointer; transition: all 0.2s;">75%</button>
+                                    <button class="btn-resize-pct" data-pct="25" style="padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); font-weight: 800; font-size: 0.8rem; color: var(--text-main); cursor: pointer; transition: all 0.2s;">25%</button>
+                                    <button class="btn-resize-pct" data-pct="50" style="padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); font-weight: 800; font-size: 0.8rem; color: var(--text-main); cursor: pointer; transition: all 0.2s;">50%</button>
+                                    <button class="btn-resize-pct" data-pct="75" style="padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); font-weight: 800; font-size: 0.8rem; color: var(--text-main); cursor: pointer; transition: all 0.2s;">75%</button>
                                 </div>
                             </div>
-
-                            <button id="btn-resize-img-save" class="btn btn-primary" style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);"><i class="ph-light ph-download-simple"></i> Download Results</button>
                         </div>
                     </div>
 
-                    <!-- Bulk Operations Card -->
-                    <div style="background: var(--bg-elevated); border-radius: 24px; padding: 24px; color: var(--text-main); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
-                        <h4 style="margin: 0 0 15px 0; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                            <i class="ph-light ph-package" style="color: #60a5fa;"></i> Bulk Operations
+                    <!-- Output Card -->
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 28px; padding: 25px; box-shadow: var(--shadow-md);">
+                        <h4 style="margin: 0 0 15px 0; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 8px; color: var(--text-main);">
+                            <i class="ph-bold ph-export" style="color: var(--color-green);"></i> Format Keluaran
                         </h4>
                         <div style="display: grid; gap: 15px;">
-                            <div>
-                                <label style="display: block; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Output Format</label>
-                                <select id="resize-bulk-format" style="width: 100%; padding: 12px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-main); outline: none; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
-                                    <option value="original">Same as Original</option>
-                                    <option value="image/jpeg">Convert to JPG</option>
-                                    <option value="image/png">Convert to PNG</option>
-                                    <option value="image/webp">Convert to WebP</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Filename Suffix</label>
-                                <input type="text" id="resize-bulk-suffix" placeholder="e.g. -resized" style="width: 100%; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); outline: none; font-size: 0.85rem;">
-                            </div>
-                            <button id="btn-resize-bulk-clear" style="width: 100%; padding: 10px; background: var(--color-red-light); border: 1px solid var(--color-red-light); border-radius: 10px; color: var(--color-red); font-weight: 800; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;"><i class="ph ph-trash"></i> Clear All Files</button>
-                        </div>
-                    </div>
-
-                    <!-- List Card -->
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; flex: 1; display: flex; flex-direction: column;">
-                        <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.05em;">Selected Files</div>
-                        <div id="resize-img-grid" style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px;"></div>
-                    </div>
-                </div>
-
-                <!-- Right: Massive Comparison Preview -->
-                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 32px; padding: 32px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.03); position: sticky; top: 20px; height: 680px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main);">Comparison Workspace</h4>
-                        <div style="display: flex; gap: 8px;">
-                            <div id="resize-pct-badge" style="background: var(--color-blue-light); color: var(--primary-blue); font-size: 0.75rem; font-weight: 900; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--color-blue-light);">100%</div>
-                        </div>
-                    </div>
-
-                    <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; min-height: 500px;">
-                        <!-- Original Panel -->
-                        <div style="display: flex; flex-direction: column; gap: 14px;">
-                            <div style="text-align: center; font-size: 0.75rem; font-weight: 900; color: var(--text-muted); letter-spacing: 0.1em;">ORIGINAL</div>
-                            <div style="flex: 1; background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 20px; position: relative;">
-                                <img id="resize-preview-orig" style="max-width: 95%; max-height: 95%; object-fit: contain; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.08));">
-                                <div id="resize-label-orig" style="position: absolute; bottom: 20px; font-size: 0.8rem; font-weight: 800; color: var(--text-muted); background: var(--bg-card); padding: 6px 16px; border-radius: 12px; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color);">0 x 0</div>
-                            </div>
-                        </div>
-
-                        <!-- Result Panel -->
-                        <div style="display: flex; flex-direction: column; gap: 14px;">
-                            <div style="text-align: center; font-size: 0.75rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 0.1em;">PREVIEW RESIZE</div>
-                            <div style="flex: 1; background: var(--color-blue-light); border: 2.5px solid var(--primary-blue); border-radius: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 20px; position: relative;">
-                                <div id="resize-scale-box" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                                    <img id="resize-preview-new" style="max-width: 95%; max-height: 95%; object-fit: contain; filter: drop-shadow(0 25px 50px rgba(0, 122, 255, 0.2)); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
-                                </div>
-                                <div id="resize-label-new" style="position: absolute; bottom: 20px; font-size: 0.8rem; font-weight: 900; color: white; background: var(--primary-blue); padding: 8px 18px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 122, 255, 0.4);">0 x 0</div>
+                            <select id="resize-bulk-format" style="width: 100%; padding: 12px; background: var(--bg-main); border: 1.5px solid var(--border-color); border-radius: 12px; color: var(--text-main); outline: none; font-size: 0.85rem; font-weight: 800; cursor: pointer;">
+                                <option value="original">Format Asli</option>
+                                <option value="image/jpeg">JPG (High Quality)</option>
+                                <option value="image/png">PNG (Lossless)</option>
+                                <option value="image/webp">WebP (Optimized)</option>
+                            </select>
+                            <div style="position: relative;">
+                                <input type="text" id="resize-bulk-suffix" placeholder="Akhiran Nama (Suffix)" style="width: 100%; padding: 12px; background: var(--bg-main); border: 1.5px solid var(--border-color); border-radius: 12px; color: var(--text-main); outline: none; font-size: 0.85rem; font-weight: 600;">
+                                <i class="ph ph-tag" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
                             </div>
                         </div>
                     </div>
+
+                    <button id="btn-resize-img-save" class="btn btn-primary" style="width: 100%; height: 65px; border-radius: 20px; font-weight: 900; font-size: 1.1rem; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 12px 25px rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease;">
+                        <i class="ph-bold ph-download-simple" style="font-size: 1.5rem;"></i> Simpan Semua
+                    </button>
                 </div>
             </div>
         </div>
     </template>
-    <!-- Template: Konversi Gambar -->
+    <!-- Template: Konversi Gambar (ULTIMATE OVERHAUL) -->
     <template id="tpl-convert-image">
-        <div class="pdf-tool-container" style="width: 100%; max-width: 1440px; margin: 0 auto; padding: 20px;">
-            <div id="conv-img-upload-area" class="upload-area" style="cursor: pointer;">
-                <i class="ph-light ph-arrows-counter-clockwise" style="font-size: 80px; color: #2563eb; margin-bottom: 20px;"></i>
-                <div class="upload-text">
-                    <h3>Konversi Format Gambar</h3>
-                    <p>Ubah file JPG, PNG, atau WebP Anda secara massal</p>
+        <div class="pdf-tool-container" style="width: 100%; max-width: 1440px; margin: 0 auto; padding: 10px;">
+            <div id="conv-img-upload-area" class="upload-area" style="cursor: pointer; min-height: 350px;">
+                <div style="background: var(--color-blue-light); width: 100px; height: 100px; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin-bottom: 25px;">
+                    <i class="ph-fill ph-arrows-counter-clockwise" style="font-size: 50px; color: var(--primary-blue);"></i>
                 </div>
-                <div class="btn btn-primary">Pilih Gambar</div>
+                <div class="upload-text">
+                    <h3 style="font-size: 1.8rem; font-weight: 900; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Konversi Gambar Pro</h3>
+                    <p style="color: var(--text-muted); font-weight: 500;">Ubah format JPG, PNG, atau WebP secara massal dengan kualitas studio</p>
+                </div>
+                <div class="btn btn-primary" style="padding: 14px 30px; border-radius: 14px;">Pilih Gambar</div>
             </div>
             <input type="file" id="conv-img-file-input" accept="image/*" multiple style="display: none;">
 
-            <!-- Editor Layout -->
-            <div id="conv-img-workspace" style="display: none; width: 100%; grid-template-columns: 350px 1fr; gap: 40px; align-items: start;">
+            <!-- Cinematic Editor Layout -->
+            <div id="conv-img-workspace" style="display: none; width: 100%; grid-template-columns: 280px 1fr 320px; gap: 20px; align-items: stretch; min-height: 750px;">
                 
-                <!-- Left: Control Panel -->
-                <div style="display: flex; flex-direction: column; gap: 24px;">
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
-                        <h4 style="margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
-                            <i class="ph-light ph-gear" style="color: #2563eb;"></i> Conversion Settings
+                <!-- Left: File Strip -->
+                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 28px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Antrean File</span>
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary-blue); box-shadow: 0 0 10px var(--primary-blue);"></div>
+                    </div>
+                    <div id="conv-img-grid" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; scrollbar-width: thin;"></div>
+                </div>
+
+                <!-- Center: Preview Canvas -->
+                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-lg); position: relative;">
+                    <div style="padding: 20px 30px; background: var(--glass-bg); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="ph ph-eye" style="color: var(--primary-blue); font-size: 1.2rem;"></i>
+                            <span style="font-size: 0.85rem; font-weight: 800; color: var(--text-main);">Pratinjau Studio</span>
+                        </div>
+                    </div>
+
+                    <div style="flex: 1; background: var(--bg-main); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 40px; position: relative;">
+                        <img id="conv-preview-img" style="max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.15)); transition: all 0.3s ease;">
+                        
+                        <!-- Floating Info Badge -->
+                        <div id="conv-img-info" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--bg-card); padding: 12px 25px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 8px; min-width: 280px; backdrop-filter: blur(10px);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Original</span>
+                                <span style="font-size: 0.75rem; font-weight: 800; color: var(--text-main);"><b id="conv-info-orig-type">JPG</b> (<span id="conv-info-orig-size">0 KB</span>)</span>
+                            </div>
+                            <div style="height: 1px; background: var(--border-color);"></div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.65rem; font-weight: 700; color: var(--primary-blue); text-transform: uppercase;">Estimasi Hasil</span>
+                                <span style="font-size: 0.75rem; font-weight: 900; color: var(--primary-blue);"><b id="conv-info-new-type">JPG</b> (~<span id="conv-info-new-size">0 KB</span>)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Inspector Panel -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Settings Card -->
+                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 28px; padding: 25px; box-shadow: var(--shadow-md);">
+                        <h4 style="margin: 0 0 20px 0; font-size: 1rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
+                            <i class="ph-bold ph-gear" style="color: var(--primary-blue);"></i> Pengaturan Konversi
                         </h4>
 
                         <div style="display: grid; gap: 24px;">
                             <div>
-                                <label style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Target Format</label>
+                                <label style="display: block; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em;">Format Tujuan</label>
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                                    <button class="btn-conv-format active" data-format="image/jpeg" style="padding: 12px; border-radius: 12px; border: 2.5px solid var(--primary-blue); background: var(--color-blue-light); font-weight: 800; font-size: 0.85rem; color: var(--primary-blue); cursor: pointer;">JPG</button>
-                                    <button class="btn-conv-format" data-format="image/png" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); font-weight: 800; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">PNG</button>
-                                    <button class="btn-conv-format" data-format="image/webp" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); font-weight: 800; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">WEBP</button>
+                                    <button class="btn-conv-format active" data-format="image/jpeg" style="padding: 12px; border-radius: 12px; border: 2px solid var(--primary-blue); background: var(--color-blue-light); font-weight: 800; font-size: 0.85rem; color: var(--primary-blue); cursor: pointer;">JPG</button>
+                                    <button class="btn-conv-format" data-format="image/png" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-main); font-weight: 800; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;">PNG</button>
+                                    <button class="btn-conv-format" data-format="image/webp" style="padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-main); font-weight: 800; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;">WEBP</button>
                                 </div>
                             </div>
 
-                            <div style="margin-bottom: 20px;">
+                            <div style="background: var(--bg-main); padding: 15px; border-radius: 18px; border: 1px solid var(--border-color);">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <label style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Quality Level</label>
-                                    <span id="conv-quality-val" style="font-size: 0.85rem; font-weight: 900; color: var(--primary-blue);">90%</span>
+                                    <label style="display: block; font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tingkat Kualitas</label>
+                                    <span id="conv-quality-val" style="font-size: 0.9rem; font-weight: 900; color: var(--primary-blue);">90%</span>
                                 </div>
-                                <input type="range" id="conv-quality" min="10" max="100" value="90" style="width: 100%; accent-color: var(--primary-blue); background: var(--bg-main); border-radius: 5px;">
-                                <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 8px; font-weight: 600;">Geser untuk mengatur tingkat kompresi hasil konversi.</p>
-                            </div>
-
-                            <button id="btn-conv-img-save" class="btn btn-primary" style="width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);"><i class="ph-light ph-check-circle"></i> Convert & Download</button>
-                        </div>
-                    </div>
-
-                    <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 24px; padding: 20px; flex: 1; display: flex; flex-direction: column;">
-                        <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.05em;">Queued Files</div>
-                        <div id="conv-img-grid" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto;"></div>
-                    </div>
-                </div>
-
-                <!-- Right: Preview Area -->
-                <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 32px; padding: 32px; display: flex; flex-direction: column; gap: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.03); position: sticky; top: 20px; height: 680px;">
-                    <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--text-main);">Image Preview</h4>
-                    <div style="flex: 1; background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 20px; position: relative;">
-                        <img id="conv-preview-img" style="max-width: 95%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.08));">
-                        <div id="conv-img-info" style="margin-top: 15px; font-size: 0.8rem; font-weight: 700; color: var(--text-main); background: var(--bg-card); padding: 10px 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 4px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; gap: 8px; color: var(--text-muted);">
-                                <span>Original: <b id="conv-info-orig-type" style="color: var(--text-main);">JPG</b> (<span id="conv-info-orig-size">0 KB</span>)</span>
-                            </div>
-                            <div style="width: 100%; height: 1px; background: var(--border-color); margin: 4px 0;"></div>
-                            <div style="display: flex; gap: 8px;">
-                                <span style="color: var(--primary-blue); font-weight: 800;">Estimated Result: <b id="conv-info-new-type">JPG</b> (~<span id="conv-info-new-size">0 KB</span>)</span>
+                                <input type="range" id="conv-quality" min="10" max="100" value="90" style="width: 100%; accent-color: var(--primary-blue); cursor: pointer;">
+                                <p style="font-size: 0.6rem; color: var(--text-muted); margin-top: 10px; font-weight: 600; line-height: 1.4;">Kualitas tinggi menghasilkan file lebih besar namun lebih tajam.</p>
                             </div>
                         </div>
                     </div>
+
+                    <button id="btn-conv-img-save" class="btn btn-primary" style="width: 100%; height: 65px; border-radius: 20px; font-weight: 900; font-size: 1.1rem; background: var(--primary-gradient); border: none; color: white; box-shadow: 0 12px 25px rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; gap: 12px; transition: all 0.3s ease;">
+                        <i class="ph-bold ph-check-circle" style="font-size: 1.5rem;"></i> Konversi & Unduh
+                    </button>
                 </div>
             </div>
         </div>

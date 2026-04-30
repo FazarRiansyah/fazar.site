@@ -183,7 +183,10 @@ function initCompressImg(container = document) {
                 : (item.originalSize * (1 - (estimatedSaving / 100)));
             
             const ratio = (item.compressedSize > 0 && val === (item.lastVal || val))
-                ? Math.max(0, (((item.originalSize - item.compressedSize)            const el = document.createElement('div');
+                ? Math.max(0, Math.round(((item.originalSize - item.compressedSize) / item.originalSize) * 100))
+                : estimatedSaving;
+
+            const el = document.createElement('div');
             el.style.cssText = `background:var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:12px; text-align:center; position:relative; transition:all 0.2s; min-width:0;`;
             el.innerHTML = `
                 <div style="height:110px; display:flex; align-items:center; justify-content:center; background:var(--bg-main); border-radius:12px; overflow:hidden; margin-bottom:10px; position:relative; border:1px solid var(--border-color);">
@@ -199,9 +202,6 @@ function initCompressImg(container = document) {
                     <span style="text-decoration:line-through; opacity:0.6;">${formatSize(item.originalSize)}</span>
                     <i class="ph ph-arrow-right" style="margin:0 2px;"></i>
                     <span style="color:var(--primary-blue); font-weight:800;">${formatSize(displaySize)}</span>
-                </div>
-            `;
-nt-weight:800;">${formatSize(displaySize)}</span>
                 </div>
             `;
             el.querySelector('.btn-preview-item').onclick = () => showFullPreview(item.compressedUrl, item.file.name);
