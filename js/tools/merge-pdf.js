@@ -214,12 +214,73 @@ function initMergePdf(container = document) {
     function renderFileList() {
         if (!fileListContainer) return;
         fileListContainer.innerHTML = '';
-        mergeFiles.forEach((item) => {
+        mergeFiles.forEach((item, index) => {
             const card = document.createElement('div');
-            card.style.cssText = "display: flex; align-items: center; background: var(--bg-card); padding: 12px 24px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 12px;";
+            card.setAttribute('draggable', 'true');
+            card.style.cssText = "display: flex; align-items: center; background: var(--bg-card); padding: 12px 24px; border-radius: 20px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 12px; cursor: grab;";
+            
+            // Drag and Drop Logic for File List
+            card.ondragstart = (e) => {
+                e.dataTransfer.setData('text/plain', index);
+                card.style.opacity = '0.5';
+                card.classList.add('dragging');
+            };
+            card.ondragend = () => {
+                card.style.opacity = '1';
+                card.classList.remove('dragging');
+            };
+            card.ondragover = (e) => {
+                e.preventDefault();
+                card.style.border = '2px dashed var(--primary-blue)';
+            };
+            card.ondragleave = () => {
+                card.style.border = '1px solid var(--border-color)';
+            };
+            card.ondrop = (e) => {
+                e.preventDefault();
+                card.style.border = '1px solid var(--border-color)';
+                const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                const toIndex = index;
+                
+                if (!isNaN(fromIndex) && fromIndex !== toIndex) {
+                    const movedItem = mergeFiles.splice(fromIndex, 1)[0];
+                    mergeFiles.splice(toIndex, 0, movedItem);
+                    
+                    // Sync globalPages with the new file order
+                    let newGlobalPages = [];
+                    mergeFiles.forEach(file => {
+                        const filePages = globalPages.filter(p => p.fileId === file.id);
+                        filePages.sort((a, b) => a.pageIndex - b.pageIndex);
+                        newGlobalPages = [...newGlobalPages, ...filePages];
+                    });
+                    globalPages = newGlobalPages;
+                    selectedIndices = []; // Clear selection to avoid confusion
+                    
+                    renderWorkspace();
+                }
+            };
+
             const thumb = item.firstPageThumb ? `<img src="${item.firstPageThumb}" style="width: 44px; height: 58px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color);">` : `<div style="width: 44px; height: 58px; background: var(--bg-main); color: var(--primary-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center;"><i class="ph-fill ph-file-pdf"></i></div>`;
-            card.innerHTML = `<div style="margin-right: 20px;">${thumb}</div><div style="flex-grow: 1; min-width: 0;"><div style="font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1rem;">${item.name}</div><div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${item.pageCount} Halaman • ${(item.size / (1024*1024)).toFixed(2)} MB</div></div><button class="remove-btn" style="width: 40px; height: 40px; border-radius: 12px; border: none; background: rgba(244, 63, 94, 0.1); cursor: pointer; color: #f43f5e; display: flex; align-items: center; justify-content: center;"><i class="ph-bold ph-trash"></i></button>`;
-            card.querySelector('.remove-btn').onclick = () => { mergeFiles = mergeFiles.filter(f => f.id !== item.id); globalPages = globalPages.filter(p => p.fileId !== item.id); selectedIndices = []; renderWorkspace(); if (mergeFiles.length === 0) { uploadArea.style.display = 'block'; workspace.style.display = 'none'; } };
+            card.innerHTML = `
+                <div style="margin-right: 15px; color: var(--text-muted); cursor: grab;"><i class="ph-bold ph-dots-six-vertical"></i></div>
+                <div style="margin-right: 20px;">${thumb}</div>
+                <div style="flex-grow: 1; min-width: 0;">
+                    <div style="font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1rem;">${item.name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${item.pageCount} Halaman • ${(item.size / (1024*1024)).toFixed(2)} MB</div>
+                </div>
+                <button class="remove-btn" style="width: 40px; height: 40px; border-radius: 12px; border: none; background: rgba(244, 63, 94, 0.1); cursor: pointer; color: #f43f5e; display: flex; align-items: center; justify-content: center;"><i class="ph-bold ph-trash"></i></button>
+            `;
+            card.querySelector('.remove-btn').onclick = (e) => { 
+                e.stopPropagation();
+                mergeFiles = mergeFiles.filter(f => f.id !== item.id); 
+                globalPages = globalPages.filter(p => p.fileId !== item.id); 
+                selectedIndices = []; 
+                renderWorkspace(); 
+                if (mergeFiles.length === 0) { 
+                    uploadArea.style.display = 'block'; 
+                    workspace.style.display = 'none'; 
+                } 
+            };
             fileListContainer.appendChild(card);
         });
     }
@@ -266,7 +327,41 @@ function initMergePdf(container = document) {
         globalPages.forEach((item, idx) => {
             const isSelected = selectedIndices.includes(idx);
             const card = document.createElement('div');
+            card.setAttribute('draggable', 'true');
             card.style.cssText = `background: var(--bg-card); border: 2px solid ${isSelected ? 'var(--primary-blue)' : 'var(--border-color)'}; border-radius: 18px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; ${isSelected ? 'transform: scale(1.03); z-index: 10; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);' : ''}`;
+            
+            // Drag and Drop Logic for Page Grid
+            card.ondragstart = (e) => {
+                e.dataTransfer.setData('text/page-idx', idx);
+                card.style.opacity = '0.5';
+                card.style.transform = 'scale(0.95)';
+            };
+            card.ondragend = () => {
+                card.style.opacity = '1';
+                card.style.transform = isSelected ? 'scale(1.03)' : 'scale(1)';
+            };
+            card.ondragover = (e) => {
+                e.preventDefault();
+                card.style.borderColor = 'var(--primary-blue)';
+                card.style.boxShadow = '0 0 15px rgba(37, 99, 235, 0.3)';
+            };
+            card.ondragleave = () => {
+                card.style.borderColor = isSelected ? 'var(--primary-blue)' : 'var(--border-color)';
+                card.style.boxShadow = isSelected ? '0 10px 20px rgba(37, 99, 235, 0.2)' : 'none';
+            };
+            card.ondrop = (e) => {
+                e.preventDefault();
+                const fromIdx = parseInt(e.dataTransfer.getData('text/page-idx'));
+                const toIdx = idx;
+                
+                if (!isNaN(fromIdx) && fromIdx !== toIdx) {
+                    const movedPage = globalPages.splice(fromIdx, 1)[0];
+                    globalPages.splice(toIdx, 0, movedPage);
+                    selectedIndices = [toIdx];
+                    renderWorkspace();
+                }
+            };
+
             const thumb = item.thumbnail ? `<img src="${item.thumbnail}" style="max-width: 100%; max-height: 100%; transform: rotate(${item.rotation}deg) scale(${item.rotation % 180 !== 0 ? '0.75' : '1'}); transition: transform 0.3s; border: 1px solid var(--border-color); border-radius: 4px;">` : `<div style="color: var(--text-muted);"><i class="ph ph-circle-notch animate-spin"></i></div>`;
             card.innerHTML = `<div style="width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; background: var(--bg-main); border-radius: 12px; overflow: hidden; margin-bottom: 10px; border: 1px solid var(--border-color);">${thumb}</div><div style="font-size: 0.8rem; font-weight: 800; color: ${isSelected ? 'var(--primary-blue)' : 'var(--text-muted)'};">Hal ${idx + 1}</div><button class="zoom-btn" style="position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 8px; border: none; background: rgba(0,0,0,0.5); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"><i class="ph-bold ph-magnifying-glass-plus"></i></button>`;
             card.onclick = (e) => { if (e.target.closest('.zoom-btn')) return; if (e.shiftKey && selectedIndices.length > 0) { const start = Math.min(selectedIndices[0], idx); const end = Math.max(selectedIndices[0], idx); selectedIndices = Array.from({length: end - start + 1}, (_, i) => start + i); } else if (e.ctrlKey || e.metaKey) { if (isSelected) selectedIndices = selectedIndices.filter(i => i !== idx); else selectedIndices.push(idx); } else { selectedIndices = [idx]; } renderPagePreviews(); };
