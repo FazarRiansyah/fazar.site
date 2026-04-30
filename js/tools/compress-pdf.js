@@ -84,14 +84,14 @@ function initCompressPdf(container = document) {
 
         modeCards.forEach((card, idx) => {
             if (idx === activeIndex) {
-                card.style.background = idx === 0 ? '#fef2f2' : (idx === 1 ? '#eff6ff' : '#f0fdf4');
+                card.style.background = idx === 0 ? 'var(--color-red-light)' : (idx === 1 ? 'var(--color-blue-light)' : 'var(--color-green-light)');
                 card.style.borderColor = color;
                 card.style.color = color;
                 card.style.boxShadow = `0 8px 20px ${color}22`;
             } else {
-                card.style.background = 'white';
-                card.style.borderColor = '#e2e8f0';
-                card.style.color = '#0f172a';
+                card.style.background = 'var(--bg-card)';
+                card.style.borderColor = 'var(--border-color)';
+                card.style.color = 'var(--text-main)';
                 card.style.boxShadow = 'none';
             }
         });
@@ -126,21 +126,21 @@ function initCompressPdf(container = document) {
         pdfFiles.forEach((item) => {
             const estimatedSize = item.originalSize * (1 - (savingPercent / 100));
             const el = document.createElement('div');
-            el.style.cssText = `background:white; border:1px solid #e2e8f0; border-radius:18px; padding:12px; text-align:center; position:relative; transition:all 0.2s; min-width:0;`;
+            el.style.cssText = `background:var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:12px; text-align:center; position:relative; transition:all 0.2s; min-width:0;`;
             el.innerHTML = `
-                <div style="height:120px; display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:12px; overflow:hidden; margin-bottom:10px; position:relative; border:1px solid #f1f5f9;">
-                    ${item.thumb ? `<img src="${item.thumb}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="ph ph-file-pdf" style="font-size:2rem;color:#cbd5e1;"></i>`}
-                    <div style="position:absolute; top:6px; right:6px; background:#dcfce7; color:#166534; font-size:0.6rem; font-weight:900; padding:2px 6px; border-radius:5px; border:1px solid #bbf7d0;">-${savingPercent.toFixed(0)}%</div>
+                <div style="height:120px; display:flex; align-items:center; justify-content:center; background:var(--bg-main); border-radius:12px; overflow:hidden; margin-bottom:10px; position:relative; border:1px solid var(--border-color);">
+                    ${item.thumb ? `<img src="${item.thumb}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="ph ph-file-pdf" style="font-size:2rem;color:var(--text-muted);"></i>`}
+                    <div style="position:absolute; top:6px; right:6px; background:var(--color-green-light); color:var(--color-green); font-size:0.6rem; font-weight:900; padding:2px 6px; border-radius:5px; border:1px solid var(--color-green);">-${savingPercent.toFixed(0)}%</div>
                     <div style="position:absolute; bottom:6px; right:6px; display:flex; gap:4px;">
-                        <button class="btn-preview-item" style="width:28px; height:28px; border-radius:50%; border:none; background:white; color:#2563eb; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15);"><i class="ph-bold ph-eye"></i></button>
-                        <button class="btn-remove-item" style="width:28px; height:28px; border-radius:50%; border:none; background:#fee2e2; color:#ef4444; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15);"><i class="ph ph-trash"></i></button>
+                        <button class="btn-preview-item" style="width:28px; height:28px; border-radius:50%; border:none; background:var(--bg-card); color:var(--primary-blue); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md);"><i class="ph-bold ph-eye"></i></button>
+                        <button class="btn-remove-item" style="width:28px; height:28px; border-radius:50%; border:none; background:var(--color-red-light); color:var(--color-red); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md);"><i class="ph ph-trash"></i></button>
                     </div>
                 </div>
-                <div style="font-size:0.7rem; font-weight:800; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">${item.file.name}</div>
-                <div style="font-size:0.65rem; color:#64748b; font-weight:600;">
+                <div style="font-size:0.7rem; font-weight:800; color:var(--text-main); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">${item.file.name}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); font-weight:600;">
                     <span style="text-decoration:line-through; opacity:0.6;">${formatSize(item.originalSize)}</span>
                     <i class="ph ph-arrow-right" style="margin:0 2px;"></i>
-                    <span style="color:#2563eb; font-weight:800;">${formatSize(estimatedSize)}</span>
+                    <span style="color:var(--primary-blue); font-weight:800;">${formatSize(estimatedSize)}</span>
                 </div>
             `;
             el.querySelector('.btn-preview-item').onclick = () => showPdfPreview(item.file);
@@ -152,7 +152,7 @@ function initCompressPdf(container = document) {
         });
 
         const addCard = document.createElement('div');
-        addCard.style.cssText = `border: 2px dashed #e2e8f0; border-radius: 18px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #f8fafc; color: #94a3b8; transition: all 0.2s; min-height: 175px;`;
+        addCard.style.cssText = `border: 2px dashed var(--border-color); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: var(--bg-main); color: var(--text-muted); transition: all 0.2s; min-height: 175px;`;
         addCard.onclick = triggerSelect;
         addCard.innerHTML = `<i class="ph ph-plus-circle" style="font-size: 2rem; margin-bottom: 6px;"></i><span style="font-weight: 800; font-size: 0.75rem;">Tambah PDF</span>`;
         grid.appendChild(addCard);
@@ -168,9 +168,9 @@ function initCompressPdf(container = document) {
         previewModal.style.cssText = `position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.9); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;`;
         previewModal.innerHTML = `
             <div style="position:absolute; top:20px; right:20px; display:flex; gap:12px;">
-                <button id="close-pdf-preview" style="background:white; border:none; width:44px; height:44px; border-radius:12px; cursor:pointer; font-size:1.5rem; color:#0f172a;"><i class="ph ph-x"></i></button>
+                <button id="close-pdf-preview" style="background:var(--bg-card); border:none; width:44px; height:44px; border-radius:12px; cursor:pointer; font-size:1.5rem; color:var(--text-main);"><i class="ph ph-x"></i></button>
             </div>
-            <iframe src="${url}" style="width:90%; height:90%; border-radius:12px; border:none; background:white; box-shadow:0 30px 60px rgba(0,0,0,0.5);"></iframe>
+            <iframe src="${url}" style="width:90%; height:90%; border-radius:12px; border:none; background:white; box-shadow:var(--shadow-lg);"></iframe>
         `;
         document.body.appendChild(previewModal);
         previewModal.querySelector('#close-pdf-preview').onclick = () => {
@@ -213,12 +213,12 @@ function initCompressPdf(container = document) {
         const modalBody = document.querySelector('.modal-body');
         modalBody.innerHTML = `
             <div style="text-align:center; padding:40px 20px;">
-                <div style="width:80px; height:80px; background:#dcfce7; color:#22c55e; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+                <div style="width:80px; height:80px; background:var(--color-green-light); color:var(--color-green); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
                     <i class="ph-fill ph-check-circle" style="font-size:3rem;"></i>
                 </div>
-                <h2 style="font-weight:900; margin-bottom:10px;">Berhasil Dikompres!</h2>
-                <p style="color:#64748b; margin-bottom:30px;">Semua file PDF Anda sudah diperkecil dan siap digunakan.</p>
-                <button class="btn btn-primary" onclick="location.reload()" style="padding:12px 30px; border-radius:12px; background:#2563eb; border:none;">Proses File Lain</button>
+                <h2 style="font-weight:900; margin-bottom:10px; color:var(--text-main);">Berhasil Dikompres!</h2>
+                <p style="color:var(--text-muted); margin-bottom:30px;">Semua file PDF Anda sudah diperkecil dan siap digunakan.</p>
+                <button class="btn btn-primary" onclick="location.reload()" style="padding:12px 30px; border-radius:12px;">Proses File Lain</button>
             </div>
         `;
     }

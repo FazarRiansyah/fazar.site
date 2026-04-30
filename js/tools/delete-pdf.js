@@ -93,12 +93,13 @@ function initDeletePages(container = document) {
             toolbar.id = 'delete-nitro-toolbar';
             toolbar.style.cssText = `
                 position: sticky; top: 85px; z-index: 900;
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(15px);
+                background: var(--glass-bg);
+                backdrop-filter: blur(var(--blur-intensity));
+                -webkit-backdrop-filter: blur(var(--blur-intensity));
                 padding: 15px 25px;
                 border-radius: 20px;
-                border: 1px solid #fee2e2;
-                box-shadow: 0 10px 30px rgba(239, 68, 68, 0.08);
+                border: 1px solid var(--border-color);
+                box-shadow: var(--shadow-lg);
                 margin-bottom: 30px;
                 display: flex; align-items: center; justify-content: space-between;
             `;
@@ -124,15 +125,15 @@ function initDeletePages(container = document) {
             </div>
             <style>
                 .delete-nitro-btn {
-                    padding: 10px 18px; border-radius: 12px; border: 1px solid #e2e8f0;
-                    background: white; color: #475569; font-weight: 700; font-size: 0.85rem;
+                    padding: 10px 18px; border-radius: 12px; border: 1px solid var(--border-color);
+                    background: var(--bg-card); color: var(--text-main); font-weight: 700; font-size: 0.85rem;
                     cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
                 }
-                .delete-nitro-btn:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
-                .delete-nitro-btn.primary { background: #ef4444; color: white; border: none; }
+                .delete-nitro-btn:hover:not(:disabled) { background: var(--bg-main); border-color: var(--primary-blue); transform: translateY(-1px); }
+                .delete-nitro-btn.primary { background: var(--color-red); color: white; border: none; }
                 .delete-nitro-btn.primary:hover:not(:disabled) { background: #dc2626; box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3); }
                 .delete-nitro-btn:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
-                .delete-nitro-btn.text-red:hover:not(:disabled) { color: #ef4444; border-color: #fecaca; background: #fef2f2; }
+                .delete-nitro-btn.text-red:hover:not(:disabled) { color: var(--color-red); border-color: var(--color-red); background: var(--color-red-light); }
             </style>
         `;
 
@@ -185,8 +186,8 @@ function initDeletePages(container = document) {
             const pageNum = i + 1;
             const isMarked = pagesToDelete.has(pageNum);
             
-            item.style.borderColor = isMarked ? '#ef4444' : '#e2e8f0';
-            item.style.background = isMarked ? '#fef2f2' : 'white';
+            item.style.borderColor = isMarked ? 'var(--color-red)' : 'var(--border-color)';
+            item.style.background = isMarked ? 'var(--color-red-light)' : 'var(--bg-card)';
             item.style.opacity = isMarked ? '0.7' : '1';
             
             const overlay = item.querySelector('.delete-ghost-overlay');
@@ -218,9 +219,9 @@ function initDeletePages(container = document) {
 
             const item = document.createElement('div');
             item.className = 'delete-page-item';
-            item.style.cssText = 'background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px; text-align: center; position: relative; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);';
+            item.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; text-align: center; position: relative; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);';
             item.innerHTML = `
-                <div class="delete-preview-box" style="height: 140px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 10px; overflow: hidden; pointer-events: none;">
+                <div class="delete-preview-box" style="height: 140px; display: flex; align-items: center; justify-content: center; background: var(--bg-main); border-radius: 10px; overflow: hidden; pointer-events: none;">
                     <img src="${canvas.toDataURL()}" style="max-width: 100%; max-height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 </div>
                 <div style="font-size: 0.85rem; font-weight: 800; color: #64748b; margin-top: 12px;">Halaman ${i}</div>
@@ -229,7 +230,7 @@ function initDeletePages(container = document) {
                         <i class="ph-bold ph-trash"></i>
                     </div>
                 </div>
-                <button class="zoom-btn-delete" style="position: absolute; bottom: 45px; right: 20px; width: 32px; height: 32px; border-radius: 50%; background: white; border: 1px solid #e2e8f0; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);"><i class="ph ph-magnifying-glass-plus"></i></button>
+                <button class="zoom-btn-delete" style="position: absolute; bottom: 45px; right: 20px; width: 32px; height: 32px; border-radius: 50%; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm);"><i class="ph ph-magnifying-glass-plus"></i></button>
             `;
 
             // SMART TOGGLE SELECTION
@@ -271,17 +272,17 @@ function initDeletePages(container = document) {
             padding: 20px; animation: fadeIn 0.3s ease;
         `;
         modal.innerHTML = `
-            <div style="background: white; width: 100%; max-width: 1000px; height: 90vh; border-radius: 32px; box-shadow: 0 50px 100px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-                <div style="padding: 20px 30px; background: white; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: var(--bg-card); width: 100%; max-width: 1000px; height: 90vh; border-radius: 32px; box-shadow: var(--shadow-lg); overflow: hidden; display: flex; flex-direction: column; animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                <div style="padding: 20px 30px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800;">${deleteFile.name}</h3>
                         <p style="margin: 0; color: #ef4444; font-size: 0.8rem; font-weight: 700;">Pratinjau Halaman ${pageNum}</p>
                     </div>
-                    <button id="hd-delete-close" style="width: 40px; height: 40px; border-radius: 12px; background: #f1f5f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <button id="hd-delete-close" style="width: 40px; height: 40px; border-radius: 12px; background: var(--bg-secondary); color: var(--text-main); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                         <i class="ph-bold ph-x"></i>
                     </button>
                 </div>
-                <div style="flex: 1; background: #f8fafc; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 40px;">
+                <div style="flex: 1; background: var(--bg-main); overflow: auto; display: flex; align-items: center; justify-content: center; padding: 40px;">
                     <img src="${canvas.toDataURL()}" style="max-height: 75vh; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 4px;">
                 </div>
             </div>
