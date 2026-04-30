@@ -79,13 +79,15 @@ function initCompressImg(container = document) {
         // Highlight Active Card
         modeCards.forEach((card, idx) => {
             if (idx === activeIndex) {
-                card.style.background = idx === 0 ? '#fef2f2' : (idx === 1 ? '#eff6ff' : '#f0fdf4');
+                card.style.background = idx === 0 ? 'var(--color-red-light)' : (idx === 1 ? 'var(--color-blue-light)' : 'var(--color-green-light)');
                 card.style.borderColor = color;
                 card.style.boxShadow = `0 8px 20px ${color}22`;
+                card.style.color = color;
             } else {
-                card.style.background = 'white';
-                card.style.borderColor = '#e2e8f0';
+                card.style.background = 'var(--bg-card)';
+                card.style.borderColor = 'var(--border-color)';
                 card.style.boxShadow = 'none';
+                card.style.color = 'var(--text-main)';
             }
         });
 
@@ -181,25 +183,25 @@ function initCompressImg(container = document) {
                 : (item.originalSize * (1 - (estimatedSaving / 100)));
             
             const ratio = (item.compressedSize > 0 && val === (item.lastVal || val))
-                ? Math.max(0, (((item.originalSize - item.compressedSize) / item.originalSize) * 100)).toFixed(0)
-                : estimatedSaving.toFixed(0);
-
-            const el = document.createElement('div');
-            el.style.cssText = `background:white; border:1px solid #e2e8f0; border-radius:18px; padding:12px; text-align:center; position:relative; transition:all 0.2s; min-width:0;`;
+                ? Math.max(0, (((item.originalSize - item.compressedSize)            const el = document.createElement('div');
+            el.style.cssText = `background:var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:12px; text-align:center; position:relative; transition:all 0.2s; min-width:0;`;
             el.innerHTML = `
-                <div style="height:110px; display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:12px; overflow:hidden; margin-bottom:10px; position:relative; border:1px solid #f1f5f9;">
+                <div style="height:110px; display:flex; align-items:center; justify-content:center; background:var(--bg-main); border-radius:12px; overflow:hidden; margin-bottom:10px; position:relative; border:1px solid var(--border-color);">
                     <img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">
-                    <div style="position:absolute; top:6px; right:6px; background:#dcfce7; color:#166534; font-size:0.6rem; font-weight:900; padding:2px 6px; border-radius:5px; border:1px solid #bbf7d0;">-${ratio}%</div>
+                    <div style="position:absolute; top:6px; right:6px; background:var(--color-green-light); color:var(--color-green); font-size:0.6rem; font-weight:900; padding:2px 6px; border-radius:5px; border:1px solid var(--color-green);">-${ratio}%</div>
                     <div style="position:absolute; bottom:6px; right:6px; display:flex; gap:4px;">
-                        <button class="btn-preview-item" style="width:28px; height:28px; border-radius:50%; border:none; background:white; color:#2563eb; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15);"><i class="ph-bold ph-eye"></i></button>
-                        <button class="btn-remove-item" style="width:28px; height:28px; border-radius:50%; border:none; background:#fee2e2; color:#ef4444; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.15);"><i class="ph ph-trash"></i></button>
+                        <button class="btn-preview-item" style="width:28px; height:28px; border-radius:50%; border:none; background:var(--bg-card); color:var(--primary-blue); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md);"><i class="ph-bold ph-eye"></i></button>
+                        <button class="btn-remove-item" style="width:28px; height:28px; border-radius:50%; border:none; background:var(--color-red-light); color:var(--color-red); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md);"><i class="ph ph-trash"></i></button>
                     </div>
                 </div>
-                <div style="font-size:0.7rem; font-weight:800; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">${item.file.name}</div>
-                <div style="font-size:0.65rem; color:#64748b; font-weight:600;">
+                <div style="font-size:0.7rem; font-weight:800; color:var(--text-main); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">${item.file.name}</div>
+                <div style="font-size:0.65rem; color:var(--text-muted); font-weight:600;">
                     <span style="text-decoration:line-through; opacity:0.6;">${formatSize(item.originalSize)}</span>
                     <i class="ph ph-arrow-right" style="margin:0 2px;"></i>
-                    <span style="color:#2563eb; font-weight:800;">${formatSize(displaySize)}</span>
+                    <span style="color:var(--primary-blue); font-weight:800;">${formatSize(displaySize)}</span>
+                </div>
+            `;
+nt-weight:800;">${formatSize(displaySize)}</span>
                 </div>
             `;
             el.querySelector('.btn-preview-item').onclick = () => showFullPreview(item.compressedUrl, item.file.name);
@@ -211,7 +213,7 @@ function initCompressImg(container = document) {
             grid.appendChild(el);
         });
         const addCard = document.createElement('div');
-        addCard.style.cssText = `border: 2px dashed #e2e8f0; border-radius: 18px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: #f8fafc; color: #94a3b8; transition: all 0.2s; min-height: 165px;`;
+        addCard.style.cssText = `border: 2px dashed var(--border-color); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: var(--bg-main); color: var(--text-muted); transition: all 0.2s; min-height: 165px;`;
         addCard.onclick = triggerSelect;
         addCard.innerHTML = `<i class="ph ph-plus-circle" style="font-size: 2rem; margin-bottom: 6px;"></i><span style="font-weight: 800; font-size: 0.75rem;">Tambah</span>`;
         grid.appendChild(addCard);
@@ -222,10 +224,10 @@ function initCompressImg(container = document) {
         previewModal.style.cssText = `position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.95); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px;`;
         previewModal.innerHTML = `
             <div style="position:absolute; top:20px; right:20px; display:flex; gap:12px;">
-                <a href="${url}" download="Compressed_${name.split('.')[0]}.jpg" style="background:#2563eb; color:white; padding:10px 24px; border-radius:12px; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:10px;"><i class="ph ph-download-simple"></i> Unduh</a>
-                <button id="close-p2i-preview" style="background:white; border:none; width:44px; height:44px; border-radius:12px; cursor:pointer; font-size:1.5rem; color:#0f172a;"><i class="ph ph-x"></i></button>
+                <a href="${url}" download="Compressed_${name.split('.')[0]}.jpg" style="background:var(--primary-blue); color:white; padding:10px 24px; border-radius:12px; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:10px;"><i class="ph ph-download-simple"></i> Unduh</a>
+                <button id="close-p2i-preview" style="background:var(--bg-card); border:none; width:44px; height:44px; border-radius:12px; cursor:pointer; font-size:1.5rem; color:var(--text-main);"><i class="ph ph-x"></i></button>
             </div>
-            <img src="${url}" style="max-width:90%; max-height:80%; border-radius:12px; box-shadow:0 30px 60px rgba(0,0,0,0.5); object-fit:contain; border: 4px solid white;">
+            <img src="${url}" style="max-width:90%; max-height:80%; border-radius:12px; box-shadow:var(--shadow-lg); object-fit:contain; border: 4px solid var(--bg-card);">
         `;
         document.body.appendChild(previewModal);
         previewModal.querySelector('#close-p2i-preview').onclick = () => previewModal.remove();
