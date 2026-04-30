@@ -182,15 +182,41 @@ function initCompressPdf(container = document) {
     btnExecute.onclick = async () => {
         if (pdfFiles.length === 0) return;
         btnExecute.disabled = true;
-        btnExecute.innerHTML = '<i class="ph ph-circle-notch animate-spin"></i> Sedang Mengompres...';
+        btnExecute.innerHTML = '<i class="ph-fill ph-circle-notch animate-spin"></i> Memproses Kompresi...';
 
         try {
             const results = await Promise.all(pdfFiles.map(async (item) => {
                 const arrayBuffer = await item.file.arrayBuffer();
-                const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-                const bytes = await pdfDoc.save({ useObjectStreams: true, addDefaultPage: false });
-                return { name: item.file.name, blob: new Blob([bytes], { type: 'application/pdf' }) };
+                const srcDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                
+                // STRATEGY: Rebuild the PDF from scratch to strip overhead
+                const pdfDoc = await PDFLib.PDFDocument.create();
+                const copiedPages = await pdfDoc.copyPages(srcDoc, srcDoc.getPageIndices());
+                copiedPages.forEach(page => pdfDoc.addPage(page));
+                
+                // Minimal metadata
+                pdfDoc.setProducer('JagaDokumen (https://fazar.site)');
+                pdfDoc.setCreator('JagaDokumen');
+
+                // Compression options
+                const bytes = await pdfDoc.save({ 
+                    useObjectStreams: true,
+                    addDefaultPage: false
+                });
+
+                // FALLBACK: If rebuilding makes it larger (rare but possible), use original
+                const finalBlob = bytes.length < item.originalSize 
+                    ? new Blob([bytes], { type: 'application/pdf' }) 
+                    : item.file;
+
+                return { 
+                    name: item.file.name, 
+                    blob: finalBlob,
+                    saved: Math.max(0, item.originalSize - finalBlob.size)
+                };
             }));
+
+            const totalSaved = results.reduce((acc, r) => acc + r.saved, 0);
 
             if (results.length === 1) {
                 downloadFile(results[0].blob, `Compressed_${results[0].name}`, 'application/pdf');
@@ -200,25 +226,33 @@ function initCompressPdf(container = document) {
                 const content = await zip.generateAsync({ type: 'blob' });
                 downloadFile(content, 'JagaDokumen_PDF_Compressed.zip', 'application/zip');
             }
-            showSuccessScreen();
+            showSuccessScreen(totalSaved);
         } catch (err) {
-            alert('Gagal: ' + err.message);
+            console.error(err);
+            alert('Gagal mengompres PDF: ' + err.message);
         } finally {
             btnExecute.disabled = false;
-            renderGrid();
+            btnExecute.innerHTML = pdfFiles.length === 1 ? '<i class="ph-bold ph-arrows-in"></i> Unduh Sekarang' : '<i class="ph-bold ph-arrows-in"></i> Unduh Semua (.zip)';
         }
     };
 
-    function showSuccessScreen() {
+    function showSuccessScreen(totalSaved) {
         const modalBody = document.querySelector('.modal-body');
+        const savedText = totalSaved > 0 
+            ? `Anda berhasil menghemat <strong>${formatSize(totalSaved)}</strong> penyimpanan!` 
+            : `File Anda sudah dalam kondisi paling optimal.`;
+
         modalBody.innerHTML = `
-            <div style="text-align:center; padding:40px 20px;">
-                <div style="width:80px; height:80px; background:var(--color-green-light); color:var(--color-green); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
-                    <i class="ph-fill ph-check-circle" style="font-size:3rem;"></i>
+            <div style="text-align:center; padding:50px 20px; animation: zoomIn 0.5s ease;">
+                <div style="width:100px; height:100px; background:var(--color-green-light); color:var(--color-green); border-radius:32px; display:flex; align-items:center; justify-content:center; margin:0 auto 25px; box-shadow: 0 15px 35px rgba(34,197,94,0.2);">
+                    <i class="ph-fill ph-check-circle" style="font-size:4rem;"></i>
                 </div>
-                <h2 style="font-weight:900; margin-bottom:10px; color:var(--text-main);">Berhasil Dikompres!</h2>
-                <p style="color:var(--text-muted); margin-bottom:30px;">Semua file PDF Anda sudah diperkecil dan siap digunakan.</p>
-                <button class="btn btn-primary" onclick="location.reload()" style="padding:12px 30px; border-radius:12px;">Proses File Lain</button>
+                <h2 style="font-weight:900; font-size:2rem; margin-bottom:12px; color:var(--text-main);">Kompresi Selesai!</h2>
+                <p style="color:var(--text-muted); font-size:1.1rem; margin-bottom:35px; max-width:400px; margin-left:auto; margin-right:auto; line-height:1.6;">${savedText}</p>
+                <div style="display:flex; gap:15px; justify-content:center;">
+                    <button class="btn btn-primary" onclick="location.reload()" style="padding:14px 35px; border-radius:15px; font-weight:800;">Selesai</button>
+                    <button class="btn" onclick="location.reload()" style="padding:14px 35px; border-radius:15px; background:var(--bg-card); border:1px solid var(--border-color); color:var(--text-main); font-weight:800;">Kompres Lagi</button>
+                </div>
             </div>
         `;
     }
