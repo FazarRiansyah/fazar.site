@@ -210,7 +210,7 @@ function initRotatePdf(container = document) {
                     <img src="${canvas.toDataURL()}" style="max-width: 100%; max-height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 </div>
                 <div style="font-size: 0.85rem; font-weight: 800; color: #64748b; margin-top: 12px;">Halaman ${i}</div>
-                <div class="check-overlay" style="position: absolute; top: 12px; right: 12px; width: 24px; height: 24px; background: #2563eb; color: white; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 0.8rem; z-index: 10; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);">
+                <div class="check-overlay" style="position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; background: var(--primary-blue); color: white; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 0.9rem; z-index: 10; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); border: 2.5px solid var(--bg-card);">
                     <i class="ph-bold ph-check"></i>
                 </div>
                 <div class="quick-actions" style="margin-top: 12px; display: flex; justify-content: center; gap: 8px;">
@@ -291,7 +291,7 @@ function initRotatePdf(container = document) {
                     </div>
                 </div>
                 <div style="flex: 1; background: var(--bg-main); overflow: auto; display: flex; align-items: center; justify-content: center; padding: 30px;">
-                    <div id="hd-preview-container" style="background: white; padding: 5px; border-radius: 4px; box-shadow: var(--shadow-md); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                    <div id="hd-preview-container" style="background: var(--bg-card); padding: 8px; border-radius: 8px; box-shadow: var(--shadow-lg); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid var(--border-color);">
                         <img src="${canvas.toDataURL()}" style="max-height: 75vh; max-width: 100%; display: block;">
                     </div>
                 </div>

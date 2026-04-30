@@ -170,7 +170,7 @@ function initCompressPdf(container = document) {
             <div style="position:absolute; top:20px; right:20px; display:flex; gap:12px;">
                 <button id="close-pdf-preview" style="background:var(--bg-card); border:none; width:44px; height:44px; border-radius:12px; cursor:pointer; font-size:1.5rem; color:var(--text-main);"><i class="ph ph-x"></i></button>
             </div>
-            <iframe src="${url}" style="width:90%; height:90%; border-radius:12px; border:none; background:white; box-shadow:var(--shadow-lg);"></iframe>
+            <iframe src="${url}" style="width:90%; height:90%; border-radius:12px; border:none; background:var(--bg-main); box-shadow:var(--shadow-lg);"></iframe>
         `;
         document.body.appendChild(previewModal);
         previewModal.querySelector('#close-pdf-preview').onclick = () => {

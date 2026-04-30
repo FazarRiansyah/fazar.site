@@ -34,9 +34,12 @@ function initReplacePages(container = document) {
     async function loadMain(file) {
         uploadArea.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:220px;';
         uploadArea.innerHTML = `
-            <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:#2563eb;"></i>
-            <p style="font-weight:700;color:#64748b;font-size:0.95rem;">Membaca PDF...</p>
-            <p style="font-size:0.8rem;color:#94a3b8;">${file.name}</p>`;
+            <div style="background: var(--color-blue-light); width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                <i class="ph-fill ph-circle-notch animate-spin" style="font-size: 30px; color: var(--primary-blue);"></i>
+            </div>
+            <p style="font-weight: 800; color: var(--text-main); font-size: 1.1rem; margin-bottom: 4px;">Membaca Dokumen Utama...</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${file.name}</p>
+        `;
         try {
             const buf = await file.arrayBuffer();
             mainPdf   = await pdfjsLib.getDocument({ data: buf }).promise;
@@ -74,7 +77,7 @@ function initReplacePages(container = document) {
 
             q('replace-sub-name').textContent = file.name;
             badge.textContent = subTotal + ' halaman';
-            badge.style.cssText = 'background:#dcfce7;color:#166534;padding:3px 10px;border-radius:8px;font-size:0.8rem;font-weight:700;';
+            badge.style.cssText = 'background:var(--color-green-light);color:var(--color-green);padding:4px 12px;border-radius:10px;font-size:0.75rem;font-weight:800;';
 
             q('replace-sub-start').disabled = false;
             q('replace-sub-start').max = subTotal;
@@ -109,7 +112,7 @@ function initReplacePages(container = document) {
 
         const label = q('replace-sub-end-label');
         label.textContent = e2;
-        label.style.color = (subTotal > 0 && e2 > subTotal) ? '#ef4444' : '#059669';
+        label.style.color = (subTotal > 0 && e2 > subTotal) ? 'var(--color-red)' : 'var(--color-green)';
 
         updateRunBtn();
         highlightGrids();
@@ -144,17 +147,23 @@ function initReplacePages(container = document) {
             const card = document.createElement('div');
             card.className = `rp-card rp-${type}-card`;
             card.dataset.index = i - 1;
-            card.style.cssText = 'background:white;border:2px solid #e2e8f0;border-radius:14px;padding:10px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;';
+            card.style.cssText = `
+                background: var(--bg-card); 
+                border: 2px solid var(--border-color); 
+                border-radius: 20px; padding: 10px; text-align: center; 
+                cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+                position: relative; overflow: hidden;
+            `;
             card.innerHTML = `
-                <div class="rp-badge" style="display:none;position:absolute;top:-8px;left:50%;transform:translateX(-50%);
-                    background:#2563eb;color:white;font-size:0.6rem;font-weight:800;padding:2px 8px;border-radius:20px;z-index:10;">✓ Terpilih</div>
-                <div class="rp-rotate-btn" style="position:absolute;bottom:35px;right:15px;width:32px;height:32px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,0.1);z-index:10;color:#475569;">
+                <div class="rp-badge" style="display:none; position:absolute; top:-5px; left:50%; transform:translateX(-50%);
+                    background:var(--primary-blue); color:white; font-size:0.6rem; font-weight:900; padding:2px 10px; border-radius:20px; z-index:10; box-shadow: 0 4px 10px rgba(37,99,235,0.3);">✓ TERPILIH</div>
+                <div class="rp-rotate-btn" style="position:absolute; bottom:38px; right:15px; width:30px; height:30px; background:var(--bg-card); border-radius:10px; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md); z-index:10; color:var(--text-main); border:1px solid var(--border-color);">
                     <i class="ph ph-arrows-clockwise"></i>
                 </div>
-                <div style="height:100px;display:flex;align-items:center;justify-content:center;background:#f8fafc;border-radius:8px;overflow:hidden;margin-bottom:8px;">
-                    <img src="${canvas.toDataURL()}" class="rp-thumb" style="max-width:100%;max-height:100%;object-fit:contain;transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                <div style="height:110px; display:flex; align-items:center; justify-content:center; background:var(--bg-main); border-radius:14px; overflow:hidden; margin-bottom:10px; border:1px solid var(--border-color);">
+                    <img src="${canvas.toDataURL()}" class="rp-thumb" style="max-width:90%; max-height:90%; object-fit:contain; transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));">
                 </div>
-                <div style="font-size:0.75rem;font-weight:800;color:#94a3b8;">Hal. ${i}</div>`;
+                <div style="font-size:0.7rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Halaman ${i}</div>`;
 
             card.querySelector('.rp-rotate-btn').onclick = (e) => {
                 e.stopPropagation();
@@ -198,17 +207,22 @@ function initReplacePages(container = document) {
             const isInRange   = pg >= Math.min(s1,e1) && pg <= Math.max(s1,e1);
             const sel = isManualSel || isInRange;
             
-            card.style.borderColor = sel ? '#2563eb' : '#e2e8f0';
-            card.style.background  = sel ? '#eff6ff' : 'white';
+            card.style.borderColor = sel ? 'var(--primary-blue)' : 'var(--border-color)';
+            card.style.background  = sel ? 'var(--bg-main)' : 'var(--bg-card)';
             card.querySelector('.rp-badge').style.display = sel ? 'block' : 'none';
+            card.style.transform = sel ? 'translateY(-5px)' : 'translateY(0)';
+            if (sel) card.style.boxShadow = '0 12px 30px rgba(37,99,235,0.15)';
+            else card.style.boxShadow = 'var(--shadow-sm)';
         });
 
         if (subGrid) {
             subGrid.querySelectorAll('.rp-sub-card').forEach((card, idx) => {
                 const pg = idx + 1;
                 const sel = pg >= Math.min(s2,e2) && pg <= Math.max(s2,e2) && pg <= subTotal;
-                card.style.borderColor = sel ? '#059669' : '#e2e8f0';
-                card.style.background  = sel ? '#f0fdf4' : 'white';
+                card.style.borderColor = sel ? 'var(--color-green)' : 'var(--border-color)';
+                card.style.background  = sel ? 'var(--bg-main)' : 'var(--bg-card)';
+                if (sel) card.style.boxShadow = '0 12px 30px rgba(16,185,129,0.1)';
+                else card.style.boxShadow = 'var(--shadow-sm)';
             });
         }
     }

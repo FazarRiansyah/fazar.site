@@ -41,9 +41,12 @@ function initPdfToImg(container = document) {
         uploadArea.style.display = 'flex';
         uploadArea.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:220px;';
         uploadArea.innerHTML = `
-            <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:#2563eb;"></i>
-            <p style="font-weight:700;color:#64748b;font-size:0.95rem;">Membaca PDF...</p>
-            <p style="font-size:0.8rem;color:#94a3b8;">${file.name}</p>`;
+            <div style="background: var(--color-blue-light); width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                <i class="ph-fill ph-circle-notch animate-spin" style="font-size: 30px; color: var(--primary-blue);"></i>
+            </div>
+            <p style="font-weight: 800; color: var(--text-main); font-size: 1.1rem; margin-bottom: 4px;">Membaca Dokumen PDF...</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${file.name}</p>
+        `;
 
         try {
             const buf = await file.arrayBuffer();
@@ -99,19 +102,27 @@ function initPdfToImg(container = document) {
             const el = document.createElement('div');
             el.className = 'p2i-card';
             el.dataset.index = idx;
-            el.style.cssText = 'background:white; border:2px solid #e2e8f0; border-radius:18px; padding:12px; text-align:center; position:relative; cursor:pointer; transition:all 0.2s;';
+            el.style.cssText = `
+                background: var(--bg-card); 
+                border: 2px solid var(--border-color); 
+                border-radius: 24px; padding: 14px; text-align: center; 
+                position: relative; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                overflow: hidden;
+            `;
 
             el.innerHTML = `
-                <div style="height:140px; display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:12px; overflow:hidden; margin-bottom:10px; position:relative;">
-                    <img src="${thumb}" class="p2i-thumb" style="max-width:100%; max-height:100%; object-fit:contain; transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-                    <div class="p2i-overlay" style="display:none; position:absolute; inset:0; background:rgba(37,99,235,0.1); align-items:center; justify-content:center;">
-                        <i class="ph-fill ph-check-circle" style="color:#2563eb; font-size:2rem;"></i>
+                <div style="height: 160px; display: flex; align-items: center; justify-content: center; background: var(--bg-main); border-radius: 16px; overflow: hidden; margin-bottom: 12px; position: relative; border: 1px solid var(--border-color);">
+                    <img src="${thumb}" class="p2i-thumb" style="max-width: 90%; max-height: 90%; object-fit: contain; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 8px 15px rgba(0,0,0,0.1));">
+                    <div class="p2i-overlay" style="display: none; position: absolute; inset: 0; background: rgba(37, 99, 235, 0.08); align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+                        <div style="background: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);">
+                            <i class="ph-fill ph-check-circle" style="color: var(--primary-blue); font-size: 1.8rem;"></i>
+                        </div>
                     </div>
-                    <button class="p2i-rotate-btn" style="position:absolute; bottom:8px; right:8px; width:28px; height:28px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.1); z-index:10; color:#64748b; border:none; cursor:pointer;">
+                    <button class="p2i-rotate-btn" style="position: absolute; bottom: 10px; right: 10px; width: 32px; height: 32px; background: var(--bg-card); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); z-index: 10; color: var(--text-main); border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s;">
                         <i class="ph ph-arrows-clockwise"></i>
                     </button>
                 </div>
-                <div class="p2i-label" style="font-size:0.8rem; font-weight:800; color:#94a3b8;">Halaman ${idx + 1}</div>
+                <div class="p2i-label" style="font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Halaman ${idx + 1}</div>
             `;
 
             el.querySelector('.p2i-rotate-btn').onclick = (e) => {
@@ -146,14 +157,19 @@ function initPdfToImg(container = document) {
             const selected = selectedIndices.has(idx);
             const rot = rotationStates[idx] || 0;
             
-            card.style.borderColor = selected ? '#2563eb' : '#e2e8f0';
-            card.style.background  = selected ? '#eff6ff' : 'white';
+            card.style.borderColor = selected ? 'var(--primary-blue)' : 'var(--border-color)';
+            card.style.background  = selected ? 'var(--bg-main)' : 'var(--bg-card)';
             card.querySelector('.p2i-overlay').style.display = selected ? 'flex' : 'none';
-            card.querySelector('.p2i-label').style.color = selected ? '#2563eb' : '#94a3b8';
+            card.querySelector('.p2i-label').style.color = selected ? 'var(--primary-blue)' : 'var(--text-muted)';
             card.querySelector('.p2i-thumb').style.transform = `rotate(${rot}deg)`;
             
-            if (selected) card.style.boxShadow = '0 8px 24px rgba(37,99,235,0.15)';
-            else card.style.boxShadow = 'none';
+            if (selected) {
+                card.style.boxShadow = '0 15px 35px rgba(37,99,235,0.15)';
+                card.style.transform = 'translateY(-5px)';
+            } else {
+                card.style.boxShadow = 'var(--shadow-sm)';
+                card.style.transform = 'translateY(0)';
+            }
         });
 
         const count = selectedIndices.size;

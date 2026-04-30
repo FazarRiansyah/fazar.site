@@ -108,7 +108,7 @@ function initDeletePages(container = document) {
 
         toolbar.innerHTML = `
             <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="background: #ef4444; color: white; padding: 8px 16px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);" id="delete-selected-count">
+                <div style="background: var(--color-red); color: white; padding: 8px 18px; border-radius: 12px; font-weight: 900; font-size: 0.85rem; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); letter-spacing: 0.05em;" id="delete-selected-count">
                     0 Halaman Dibuang
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -118,7 +118,7 @@ function initDeletePages(container = document) {
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <button class="delete-nitro-btn text-red" id="btn-delete-clear">Batal</button>
-                <div style="width: 1px; background: #eee; height: 30px; margin: 0 5px;"></div>
+                <div style="width: 1px; background: var(--border-color); height: 30px; margin: 0 8px;"></div>
                 <button class="delete-nitro-btn primary" id="btn-delete-submit">
                     <i class="ph ph-trash"></i> Hapus & Unduh
                 </button>
@@ -225,8 +225,8 @@ function initDeletePages(container = document) {
                     <img src="${canvas.toDataURL()}" style="max-width: 100%; max-height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 </div>
                 <div style="font-size: 0.85rem; font-weight: 800; color: #64748b; margin-top: 12px;">Halaman ${i}</div>
-                <div class="delete-ghost-overlay" style="position: absolute; inset: 0; background: rgba(239, 68, 68, 0.1); display: none; align-items: center; justify-content: center; border-radius: 16px; pointer-events: none;">
-                    <div style="width: 40px; height: 40px; background: #ef4444; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);">
+                <div class="delete-ghost-overlay" style="position: absolute; inset: 0; background: rgba(239, 68, 68, 0.12); display: none; align-items: center; justify-content: center; border-radius: 16px; pointer-events: none; backdrop-filter: blur(2px);">
+                    <div style="width: 48px; height: 48px; background: var(--color-red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4); border: 3px solid var(--bg-card);">
                         <i class="ph-bold ph-trash"></i>
                     </div>
                 </div>

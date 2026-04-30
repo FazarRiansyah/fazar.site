@@ -96,9 +96,10 @@ async function initPageNumbers(container = document) {
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-        canvas.style.boxShadow = '0 20px 50px rgba(0,0,0,0.1)';
-        canvas.style.background = 'white';
-        canvas.style.borderRadius = '4px';
+        canvas.style.boxShadow = 'var(--shadow-lg)';
+        canvas.style.background = 'var(--bg-card)';
+        canvas.style.borderRadius = '8px';
+        canvas.style.border = '1px solid var(--border-color)';
         
         previewContainer.appendChild(canvas);
         previewContainer.appendChild(visualMarker); // Put marker back

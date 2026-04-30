@@ -29,9 +29,12 @@ function initImageToPdf(container = document) {
         if (imageItems.length === 0) {
             uploadArea.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:220px;';
             uploadArea.innerHTML = `
-                <i class="ph ph-circle-notch animate-spin" style="font-size:3rem;color:#2563eb;"></i>
-                <p style="font-weight:700;color:#64748b;font-size:0.95rem;">Membaca Gambar...</p>
-                <p style="font-size:0.8rem;color:#94a3b8;">${files.length} File dipilih</p>`;
+                <div style="background: var(--color-blue-light); width: 80px; height: 80px; border-radius: 24px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    <i class="ph-fill ph-circle-notch animate-spin" style="font-size: 30px; color: var(--primary-blue);"></i>
+                </div>
+                <p style="font-weight: 800; color: var(--text-main); font-size: 1.1rem; margin-bottom: 4px;">Membaca Gambar...</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">${files.length} File dipilih</p>
+            `;
         }
 
         for (const file of files) {
@@ -84,20 +87,23 @@ function initImageToPdf(container = document) {
             el.className = 'img-nitro-item';
             el.dataset.id = item.id;
             el.style.cssText = `
-                background:white; border:1px solid #e2e8f0; border-radius:18px; padding:12px;
-                text-align:center; position:relative; cursor:grab; transition:all 0.2s;
-                min-width:0; display:flex; flex-direction:column;
+                background: var(--bg-card); 
+                border: 2px solid var(--border-color); 
+                border-radius: 24px; padding: 14px;
+                text-align: center; position: relative; cursor: grab; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                min-width: 0; display: flex; flex-direction: column;
+                box-shadow: var(--shadow-sm);
             `;
 
             el.innerHTML = `
-                <div style="height:120px; display:flex; align-items:center; justify-content:center; background:#f8fafc; border-radius:10px; overflow:hidden; margin-bottom:10px; position:relative;">
-                    <img src="${item.src}" style="max-width:100%; max-height:100%; object-fit:contain; transform:rotate(${item.rotation}deg); transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-                    <div style="position:absolute; top:8px; left:8px; background:#2563eb; color:white; font-size:0.65rem; font-weight:900; padding:2px 8px; border-radius:6px; box-shadow:0 4px 8px rgba(37,99,235,0.25);">${index + 1}</div>
+                <div style="height: 130px; display: flex; align-items: center; justify-content: center; background: var(--bg-main); border-radius: 16px; overflow: hidden; margin-bottom: 12px; position: relative; border: 1px solid var(--border-color);">
+                    <img src="${item.src}" style="max-width: 90%; max-height: 90%; object-fit: contain; transform: rotate(${item.rotation}deg); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); filter: drop-shadow(0 8px 15px rgba(0,0,0,0.1));">
+                    <div style="position: absolute; top: 10px; left: 10px; background: var(--primary-blue); color: white; font-size: 0.7rem; font-weight: 900; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; box-shadow: 0 4px 10px rgba(37,99,235,0.3); border: 2px solid var(--bg-card);">${index + 1}</div>
                 </div>
-                <div style="font-size:0.75rem; font-weight:700; color:#475569; margin-bottom:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 4px; width:100%;">${item.name}</div>
-                <div style="display:flex; gap:6px; margin-top:auto;">
-                    <button class="btn-rotate" title="Putar (R)" style="flex:1; height:32px; border-radius:8px; border:1px solid #e2e8f0; background:#f8fafc; color:#64748b; cursor:pointer;"><i class="ph ph-arrows-clockwise"></i></button>
-                    <button class="btn-remove" title="Hapus" style="flex:1; height:32px; border-radius:8px; border:1px solid #fee2e2; background:#fef2f2; color:#ef4444; cursor:pointer;"><i class="ph ph-trash"></i></button>
+                <div style="font-size: 0.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 4px; width: 100%;">${item.name}</div>
+                <div style="display: flex; gap: 8px; margin-top: auto;">
+                    <button class="btn-rotate" title="Putar (R)" style="flex: 1; height: 36px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-main); cursor: pointer; transition: 0.2s;"><i class="ph ph-arrows-clockwise"></i></button>
+                    <button class="btn-remove" title="Hapus" style="flex: 1; height: 36px; border-radius: 10px; border: 1px solid var(--color-red-light); background: var(--color-red-light); color: var(--color-red); cursor: pointer; transition: 0.2s;"><i class="ph ph-trash"></i></button>
                 </div>
             `;
 
@@ -119,17 +125,17 @@ function initImageToPdf(container = document) {
 
         const addCard = document.createElement('div');
         addCard.style.cssText = `
-            border: 2px dashed #e2e8f0; border-radius: 18px; padding: 12px;
+            border: 2px dashed var(--border-color); border-radius: 24px; padding: 14px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; background: #f8fafc; color: #94a3b8; transition: all 0.2s; min-height: 200px;
-            min-width: 0;
+            cursor: pointer; background: var(--bg-main); color: var(--text-muted); transition: all 0.3s; min-height: 220px;
+            min-width: 0; box-shadow: var(--shadow-sm);
         `;
-        addCard.onmouseover = () => { addCard.style.borderColor = '#2563eb'; addCard.style.color = '#2563eb'; addCard.style.background = '#eff6ff'; };
-        addCard.onmouseout  = () => { addCard.style.borderColor = '#e2e8f0'; addCard.style.color = '#94a3b8'; addCard.style.background = '#f8fafc'; };
+        addCard.onmouseover = () => { addCard.style.borderColor = 'var(--primary-blue)'; addCard.style.color = 'var(--primary-blue)'; addCard.style.transform = 'scale(1.02)'; };
+        addCard.onmouseout  = () => { addCard.style.borderColor = 'var(--border-color)'; addCard.style.color = 'var(--text-muted)'; addCard.style.transform = 'scale(1)'; };
         addCard.onclick     = triggerSelect;
         addCard.innerHTML = `
-            <i class="ph ph-plus-circle" style="font-size: 2.2rem; margin-bottom: 8px;"></i>
-            <span style="font-weight: 800; font-size: 0.8rem;">Tambah Gambar</span>
+            <i class="ph-fill ph-plus-circle" style="font-size: 2.8rem; margin-bottom: 12px; color: var(--primary-blue); opacity: 0.8;"></i>
+            <span style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Tambah Gambar</span>
         `;
         grid.appendChild(addCard);
 

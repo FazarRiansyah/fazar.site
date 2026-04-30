@@ -304,9 +304,9 @@ function initMergePdf(container = document) {
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button id="btn-bulk-left" class="action-pill"><i class="ph ph-arrow-left"></i> Kiri</button>
                     <button id="btn-bulk-right" class="action-pill">Kanan <i class="ph ph-arrow-right"></i></button>
-                    <button id="btn-bulk-rot" class="action-pill" style="color: #4f46e5; background: #eef2ff;"><i class="ph ph-arrow-clockwise"></i> Putar</button>
-                    <button id="btn-bulk-dup" class="action-pill" style="color: #0891b2; background: #ecfeff;"><i class="ph ph-copy"></i> Gandakan</button>
-                    <button id="btn-bulk-del" class="action-pill" style="color: #e11d48; background: #fff1f2;"><i class="ph ph-trash"></i> Hapus</button>
+                    <button id="btn-bulk-rot" class="action-pill" style="color: var(--primary-blue); background: var(--color-blue-light);"><i class="ph ph-arrow-clockwise"></i> Putar</button>
+                    <button id="btn-bulk-dup" class="action-pill" style="color: var(--color-blue); background: var(--bg-main);"><i class="ph ph-copy"></i> Gandakan</button>
+                    <button id="btn-bulk-del" class="action-pill" style="color: var(--color-red); background: var(--color-red-light);"><i class="ph ph-trash"></i> Hapus</button>
                 </div>
             </div>
             <style>
