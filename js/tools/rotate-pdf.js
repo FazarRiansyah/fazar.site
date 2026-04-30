@@ -96,12 +96,13 @@ function initRotatePdf(container = document) {
             toolbar.id = 'rotate-bulk-toolbar';
             toolbar.style.cssText = `
                 position: sticky; top: 85px; z-index: 900;
-                background: rgba(255, 255, 255, 0.9);
-                backdrop-filter: blur(15px);
+                background: var(--glass-bg);
+                backdrop-filter: blur(var(--blur-intensity));
+                -webkit-backdrop-filter: blur(var(--blur-intensity));
                 padding: 15px 25px;
                 border-radius: 20px;
-                border: 1px solid rgba(226, 232, 240, 1);
-                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                border: 1px solid var(--border-color);
+                box-shadow: var(--shadow-lg);
                 margin-bottom: 30px;
                 display: flex; align-items: center; justify-content: space-between;
             `;
@@ -124,15 +125,15 @@ function initRotatePdf(container = document) {
             </div>
             <style>
                 .bulk-nitro-btn {
-                    padding: 10px 18px; border-radius: 12px; border: 1px solid #e2e8f0;
-                    background: white; color: #475569; font-weight: 700; font-size: 0.85rem;
+                    padding: 10px 18px; border-radius: 12px; border: 1px solid var(--border-color);
+                    background: var(--bg-card); color: var(--text-main); font-weight: 700; font-size: 0.85rem;
                     cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
                 }
-                .bulk-nitro-btn:hover:not(:disabled) { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
-                .bulk-nitro-btn.primary { background: #2563eb; color: white; border: none; }
-                .bulk-nitro-btn.primary:hover:not(:disabled) { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+                .bulk-nitro-btn:hover:not(:disabled) { background: var(--bg-main); border-color: var(--primary-blue); transform: translateY(-1px); }
+                .bulk-nitro-btn.primary { background: var(--primary-blue); color: white; border: none; }
+                .bulk-nitro-btn.primary:hover:not(:disabled) { background: var(--primary-blue-dark); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
                 .bulk-nitro-btn:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
-                .bulk-nitro-btn.text-red:hover:not(:disabled) { color: #ef4444; border-color: #fecaca; background: #fef2f2; }
+                .bulk-nitro-btn.text-red:hover:not(:disabled) { color: var(--color-red); border-color: var(--color-red); background: var(--color-red-light); }
             </style>
         `;
 
@@ -165,9 +166,9 @@ function initRotatePdf(container = document) {
             item.classList.toggle('selected', isSelected);
             
             // Visual Update
-            item.style.borderColor = isSelected ? '#2563eb' : '#e2e8f0';
-            item.style.background = isSelected ? '#eff6ff' : 'white';
-            item.style.boxShadow = isSelected ? '0 10px 20px rgba(37, 99, 235, 0.1)' : 'none';
+            item.style.borderColor = isSelected ? 'var(--primary-blue)' : 'var(--border-color)';
+            item.style.background = isSelected ? 'var(--color-blue-light)' : 'var(--bg-card)';
+            item.style.boxShadow = isSelected ? 'var(--shadow-md)' : 'none';
             item.querySelector('.check-overlay').style.display = isSelected ? 'flex' : 'none';
 
             const preview = item.querySelector('.rotate-preview-box');
@@ -203,9 +204,9 @@ function initRotatePdf(container = document) {
 
             const item = document.createElement('div');
             item.className = 'rotate-page-item';
-            item.style.cssText = 'background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px; text-align: center; position: relative; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);';
+            item.style.cssText = 'background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; text-align: center; position: relative; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);';
             item.innerHTML = `
-                <div class="rotate-preview-box" style="height: 140px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 10px; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;">
+                <div class="rotate-preview-box" style="height: 140px; display: flex; align-items: center; justify-content: center; background: var(--bg-main); border-radius: 10px; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;">
                     <img src="${canvas.toDataURL()}" style="max-width: 100%; max-height: 100%; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 </div>
                 <div style="font-size: 0.85rem; font-weight: 800; color: #64748b; margin-top: 12px;">Halaman ${i}</div>
@@ -220,11 +221,11 @@ function initRotatePdf(container = document) {
                 <style>
                     .mini-nitro-btn { 
                         width: 32px; height: 32px; border-radius: 10px; border: none; 
-                        background: #f1f5f9; color: #475569; cursor: pointer; 
+                        background: var(--bg-secondary); color: var(--text-muted); cursor: pointer; 
                         transition: all 0.2s; display: flex; align-items: center; justify-content: center;
                     }
-                    .mini-nitro-btn:hover { background: #e2e8f0; transform: scale(1.1); }
-                    .mini-nitro-btn.zoom-btn:hover { background: #2563eb; color: white; }
+                    .mini-nitro-btn:hover { background: var(--border-color); color: var(--text-main); transform: scale(1.1); }
+                    .mini-nitro-btn.zoom-btn:hover { background: var(--primary-blue); color: white; }
                 </style>
             `;
 
@@ -274,23 +275,23 @@ function initRotatePdf(container = document) {
             padding: 20px; animation: fadeIn 0.3s ease;
         `;
         modal.innerHTML = `
-            <div style="background: white; width: 100%; max-width: 1100px; height: 90vh; border-radius: 32px; box-shadow: 0 50px 100px rgba(0,0,0,0.4); overflow: hidden; display: flex; flex-direction: column; animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-                <div style="padding: 20px 30px; background: white; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between;">
+            <div style="background: var(--bg-card); width: 100%; max-width: 1100px; height: 90vh; border-radius: 32px; box-shadow: var(--shadow-lg); overflow: hidden; display: flex; flex-direction: column; animation: zoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                <div style="padding: 20px 30px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         <h3 style="margin: 0; font-size: 1.2rem; font-weight: 800;">Halaman ${pageNum}</h3>
                         <p style="margin: 0; color: #2563eb; font-size: 0.8rem; font-weight: 700;">Pratinjau HD & Rotasi</p>
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <button id="hd-rot-r" style="padding: 8px 20px; border-radius: 12px; background: #eff6ff; color: #2563eb; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <button id="hd-rot-r" style="padding: 8px 20px; border-radius: 12px; background: var(--color-blue-light); color: var(--primary-blue); border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                             <i class="ph ph-arrow-clockwise"></i> Putar
                         </button>
-                        <button id="hd-close" style="width: 40px; height: 40px; border-radius: 12px; background: #f1f5f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                        <button id="hd-close" style="width: 40px; height: 40px; border-radius: 12px; background: var(--bg-secondary); color: var(--text-main); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                             <i class="ph ph-x"></i>
                         </button>
                     </div>
                 </div>
-                <div style="flex: 1; background: #f8fafc; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 30px;">
-                    <div id="hd-preview-container" style="background: white; padding: 5px; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                <div style="flex: 1; background: var(--bg-main); overflow: auto; display: flex; align-items: center; justify-content: center; padding: 30px;">
+                    <div id="hd-preview-container" style="background: white; padding: 5px; border-radius: 4px; box-shadow: var(--shadow-md); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
                         <img src="${canvas.toDataURL()}" style="max-height: 75vh; max-width: 100%; display: block;">
                     </div>
                 </div>

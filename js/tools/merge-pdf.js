@@ -170,18 +170,18 @@ function initMergePdf(container = document) {
                 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             </style>
-            <div style="position: relative; width: 100%; max-width: 850px; height: 90vh; background: #fff; border-radius: 35px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);">
-                <div style="padding: 20px 35px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #fff;">
+            <div style="position: relative; width: 100%; max-width: 850px; height: 90vh; background: var(--bg-card); border-radius: 35px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow-lg);">
+                <div style="padding: 20px 35px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--bg-card);">
                     <div style="flex-grow: 1; min-width: 0; margin-right: 20px;">
                         <div style="font-weight: 900; color: #0f172a; font-size: 1.15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.fileName}</div>
                         <div style="font-size: 0.8rem; color: #2563eb; font-weight: 700;">Pratinjau HD & Rotasi</div>
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <button id="rotate-zoom-btn" style="padding: 10px 20px; border-radius: 14px; border: none; background: #eff6ff; color: #2563eb; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 0.9rem; transition: all 0.2s;"><i class="ph ph-arrow-clockwise"></i> Putar</button>
-                        <button id="close-zoom-modal" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: #f1f5f9; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">&times;</button>
+                        <button id="rotate-zoom-btn" style="padding: 10px 20px; border-radius: 14px; border: none; background: var(--color-blue-light); color: var(--primary-blue); cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 0.9rem; transition: all 0.2s;"><i class="ph ph-arrow-clockwise"></i> Putar</button>
+                        <button id="close-zoom-modal" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: var(--bg-secondary); color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">&times;</button>
                     </div>
                 </div>
-                <div id="hd-preview-body" style="flex-grow: 1; overflow: auto; background: #f8fafc; display: flex; align-items: center; justify-content: center; padding: 30px; position: relative;">
+                <div id="hd-preview-body" style="flex-grow: 1; overflow: auto; background: var(--bg-main); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative;">
                     <div id="hd-loader" style="color: #2563eb;"><i class="ph ph-circle-notch" style="font-size: 3rem; animation: spin 1s linear infinite;"></i></div>
                     <img id="hd-img" style="display: none; max-width: 100%; box-shadow: 0 30px 60px -10px rgba(0,0,0,0.15); transform: rotate(${item.rotation}deg); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 4px;">
                 </div>
